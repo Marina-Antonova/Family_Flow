@@ -1,6 +1,8 @@
-﻿using FamilyFlow.Data.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using FamilyFlow.Data.Models;
+using FamilyFlow.Data.Configurations;
 
 namespace FamilyFlow.Data
 {
@@ -17,6 +19,11 @@ namespace FamilyFlow.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfiguration(new FamilyMemberConfiguration());
+            modelBuilder.ApplyConfiguration(new HouseTaskConfiguration());
+            modelBuilder.ApplyConfiguration(new ScheduleEventConfiguration());
+
         }
     }
 }
