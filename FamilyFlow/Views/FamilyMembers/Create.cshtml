@@ -1,0 +1,78 @@
+﻿@model CreateFamilyMemberViewModel
+
+@{
+    ViewData["Title"] = "Add Family Member";
+}
+
+<h1 class="mb-2">Add Family Member</h1>
+<p class="text-muted mb-4">
+    Use the form below to add a new person to your family.
+</p>
+
+<div class="row justify-content">
+    <div class="col-12 col-lg-9 col-xl-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-bottom">
+                <strong>Family member details</strong>
+            </div>
+
+            <div class="card-body">
+                <form asp-action="Create" method="post" novalidate>
+                    <div asp-validation-summary="ModelOnly"
+                         class="alert alert-danger"
+                         role="alert"></div>
+
+                    <div class="mb-4">
+                        <label asp-for="Name" class="form-label"></label>
+                        <input asp-for="Name" class="form-control form-control-lg" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-12 col-md-4">
+                            <label asp-for="Age" class="form-label"></label>
+                            <input asp-for="Age" class="form-control" />
+                            <span asp-validation-for="Age" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12 col-md-8">
+                            <label asp-for="Role" class="form-label"></label>
+                            <select asp-for="Role"
+                                    class="form-select">
+                                <option value="">Choose role...</option>
+                                @foreach (var role in Html.GetEnumSelectList<FamilyRole>())
+                                {
+                                    <option value="@role.Value">@role.Text</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Role" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info mt-4 mb-0">
+                        <small>
+                            <strong>Note:</strong>
+                            Roles help categorize family members
+                            and may affect visibility in other parts of the app.
+                        </small>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a asp-controller="FamilyMembers"
+                           asp-action="All"
+                           class="btn btn-light">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            Save member
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
