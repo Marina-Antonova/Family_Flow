@@ -1,7 +1,9 @@
-﻿using FamilyFlow.Data;
+﻿using FamilyFlow.Common;
+using FamilyFlow.Data;
 using FamilyFlow.Data.Models;
 using FamilyFlow.Data.Models.Enums;
 using FamilyFlow.ViewModels.FamilyMember;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +19,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult All()
         {
             IEnumerable<AllFamilyMembersViewModel> members = dbContext
@@ -28,6 +31,7 @@ namespace FamilyFlow.Controllers
                     Id = fm.Id,
                     Name = fm.Name,
                     Role = fm.Role.ToString(),
+                    RoleImagePath = fm.Role.GetImagePath(),
                     Age = fm.Age,
                     HouseTasksCount = fm.HouseTasks.Count,
                     ScheduleEventsCount = fm.ScheduleEvents.Count
@@ -38,18 +42,19 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult Details(int id)
         {
-           if (id <=0)
+            if (id <= 0)
             {
                 return BadRequest();
             }
 
-           FamilyMember? selectedMember = dbContext
-                .FamilyMembers
-                .Include(fm => fm.HouseTasks)
-                .Include(fm => fm.ScheduleEvents)
-                .SingleOrDefault(fm => fm.Id == id);
+            FamilyMember? selectedMember = dbContext
+                 .FamilyMembers
+                 .Include(fm => fm.HouseTasks)
+                 .Include(fm => fm.ScheduleEvents)
+                 .SingleOrDefault(fm => fm.Id == id);
 
             if (selectedMember == null)
             {
@@ -69,7 +74,7 @@ namespace FamilyFlow.Controllers
                         DueDate = t.DueDate
                     })
                     .ToList(),
-                 Events = selectedMember.ScheduleEvents
+                Events = selectedMember.ScheduleEvents
                     .Select(e => new DetailsScheduleEventsViewModel
                     {
                         Id = e.Id,
@@ -79,10 +84,11 @@ namespace FamilyFlow.Controllers
                     })
                     .ToList()
             };
-            return View(viewModel);   
+            return View(viewModel);
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult Create()
         {
             CreateFamilyMemberViewModel inputModel = new CreateFamilyMemberViewModel()
@@ -92,6 +98,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult Create(FamilyMember inputModel)
         {
             if (!ModelState.IsValid)
@@ -120,6 +127,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult Edit(int id)
         {
             if (id <= 0)
@@ -146,6 +154,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult Edit(int id, CreateFamilyMemberViewModel inputModel)
         {
             if (!ModelState.IsValid)
@@ -191,6 +200,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             if (id <= 0)
@@ -216,6 +226,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult Delete(int id, DeleteFamilyMemberViewModel? viewModel)
         {
             if (id <= 0)

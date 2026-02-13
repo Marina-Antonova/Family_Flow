@@ -2,6 +2,7 @@
 using FamilyFlow.Data.Models;
 using FamilyFlow.ViewModels.HouseTasks;
 using FamilyFlow.ViewModels.ScheduleEvent;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
 
@@ -16,6 +17,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult Create(int id)
         {
             if (id <= 0)
@@ -39,6 +41,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult Create(int id, CreateEditEventViewModel inputModel)
         {
             if (id <= 0)
@@ -83,8 +86,9 @@ namespace FamilyFlow.Controllers
             }
         }
 
-            [HttpGet]
-            public IActionResult Edit(int id)
+        [HttpGet]
+        [Authorize]
+        public IActionResult Edit(int id)
             {
                 if (id <= 0)
                 {
@@ -111,8 +115,9 @@ namespace FamilyFlow.Controllers
                 return View(inputModel);
             }
 
-            [HttpPost]
-            public IActionResult Edit(int id, CreateEditEventViewModel inputModel)
+        [HttpPost]
+        [Authorize]
+        public IActionResult Edit(int id, CreateEditEventViewModel inputModel)
             {
                 if (id <= 0)
                 {
@@ -151,8 +156,9 @@ namespace FamilyFlow.Controllers
                 }
             }
 
-            [HttpGet]
-            public IActionResult Delete(int id)
+        [HttpGet]
+        [Authorize]
+        public IActionResult Delete(int id)
             {
                 if (id <= 0)
                 {
@@ -179,8 +185,9 @@ namespace FamilyFlow.Controllers
                 return View(viewModel);
             }
 
-            [HttpPost]
-            public IActionResult Delete(int id, DeleteEventViewModel viewModel)
+        [HttpPost]
+        [Authorize]
+        public IActionResult Delete(int id, DeleteEventViewModel viewModel)
             {
                 if (id <= 0)
                 {

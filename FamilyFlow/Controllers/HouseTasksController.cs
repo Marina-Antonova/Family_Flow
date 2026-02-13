@@ -2,6 +2,7 @@
 using FamilyFlow.Data.Models;
 using FamilyFlow.ViewModels.FamilyMember;
 using FamilyFlow.ViewModels.HouseTasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
 
@@ -17,6 +18,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult Create(int id)
         {
             if (id <= 0)
@@ -42,6 +44,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult Create(int id, CreateEditTaskViewModel inputModel)
         {
 
@@ -88,6 +91,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult Edit(int id)
         {
             if (id <= 0)
@@ -116,6 +120,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult Edit(int id, CreateEditTaskViewModel inputModel)
         {
             if (!ModelState.IsValid)
@@ -157,6 +162,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             if (id <= 0)
@@ -185,6 +191,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult Delete(int id, DeleteTaskViewModel viewModel)
         {
             if (id <= 0)
