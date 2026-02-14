@@ -1,8 +1,9 @@
-﻿@model FamilyFlow.ViewModels.ScheduleEvent.CreateEditEventViewModel
+﻿@model CreateEditEventViewModel
 
 @{
     ViewData["Title"] = "Create Schedule Event";
 }
+
 
 <h2>Create Schedule Event</h2>
 
@@ -33,15 +34,20 @@
         <span asp-validation-for="EndTime" class="text-danger"></span>
     </div>
 
+    <div class="mb-3">
+        <label asp-for="AccompanyingAdultId" class="form-label-add-edit">Select Adult</label>
+        <select asp-for="AccompanyingAdultId" class="form-control" aria-required="true"
+                asp-items="@(new SelectList(Model.Adults, "Id", "Name"))">
+            <option value="">Select Adult...</option>
+        </select>
+        <span asp-validation-for="AccompanyingAdultId" class="text-danger"></span>
+    </div>
+
     <button type="submit" class="btn btn-primary">Create</button>
     <a asp-controller="FamilyMembers"
-         asp-action="Details"
-         asp-route-id="@Model.FamilyMemberId"
-         class="btn btn-secondary">
+       asp-action="Details"
+       asp-route-id="@Model.FamilyMemberId"
+       class="btn btn-secondary">
         Cancel
     </a>
 </form>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

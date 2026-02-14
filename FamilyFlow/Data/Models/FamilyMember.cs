@@ -16,11 +16,13 @@ namespace FamilyFlow.Data.Models
         [Required]
         public FamilyRole Role { get; set; }
 
-        public int? Age { get; set; }
+        public int Age { get; set; }
 
         public virtual ICollection<HouseTask> HouseTasks { get; set; }
                 = new List<HouseTask>();
         public virtual ICollection<ScheduleEvent> ScheduleEvents { get; set; }
+                = new List<ScheduleEvent>();
+        public virtual ICollection<ScheduleEvent> AccompanyEvents { get; set; } 
                 = new List<ScheduleEvent>();
     }
 }

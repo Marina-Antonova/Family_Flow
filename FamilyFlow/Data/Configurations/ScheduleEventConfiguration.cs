@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FamilyFlow.Data.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using FamilyFlow.Data.Models;
+using System.Reflection.Emit;
 
 
 namespace FamilyFlow.Data.Configurations
@@ -31,7 +32,8 @@ namespace FamilyFlow.Data.Configurations
                     Title = "Doctor Appointment",
                     StartTime = new DateTime(2026, 7, 3, 14, 0, 0),
                     EndTime = new DateTime(2026, 7, 3, 15, 0, 0),
-                    FamilyMemberId = 3
+                    FamilyMemberId = 3,
+                    AccompanyingAdultId = 1
                 },
                 new ScheduleEvent
                 {
@@ -39,11 +41,24 @@ namespace FamilyFlow.Data.Configurations
                     Title = "Birthday Party",
                     StartTime = new DateTime(2026, 7, 4, 16, 0, 0),
                     EndTime = new DateTime(2026, 7, 4, 18, 0, 0),
-                    FamilyMemberId = 4
+                    FamilyMemberId = 4,
+                    AccompanyingAdultId = 2
                 }
         };
         public void Configure(EntityTypeBuilder<ScheduleEvent> entity)
-        { 
+        {
+            entity
+               .HasOne(se => se.FamilyMemberScheduleEvents)
+               .WithMany(fm => fm.ScheduleEvents)
+               .HasForeignKey(se => se.FamilyMemberId)
+               .OnDelete(DeleteBehavior.Cascade);
+
+            entity
+                .HasOne(se => se.AccompanyingAdult)
+                .WithMany(fm => fm.AccompanyEvents)
+                .HasForeignKey(se => se.AccompanyingAdultId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             entity.HasData(Events);
         }
     }

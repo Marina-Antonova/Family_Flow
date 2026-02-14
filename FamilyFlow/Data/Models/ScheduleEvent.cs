@@ -20,9 +20,15 @@ namespace FamilyFlow.Data.Models
         [Required]
         public DateTime EndTime { get; set; }
 
-        [ForeignKey(nameof(FamilyMemberScheduleEvents))]
+        
         public int FamilyMemberId { get; set; }
 
         public virtual FamilyMember FamilyMemberScheduleEvents { get; set; } = null!;
+
+
+        public int? AccompanyingAdultId { get; set; }
+
+        public virtual FamilyMember? AccompanyingAdult { get; set; }
     }
 }
+

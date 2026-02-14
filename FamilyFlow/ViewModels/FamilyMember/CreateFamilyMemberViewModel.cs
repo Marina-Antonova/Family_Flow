@@ -16,6 +16,6 @@ namespace FamilyFlow.ViewModels.FamilyMember
         public string Role { get; set; } = null!;
 
         [Range(MinAge, MaxAge)]
-        public int? Age { get; set; }
+        public int Age { get; set; }
     }
 }

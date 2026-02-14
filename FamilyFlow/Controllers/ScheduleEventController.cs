@@ -4,6 +4,7 @@ using FamilyFlow.ViewModels.HouseTasks;
 using FamilyFlow.ViewModels.ScheduleEvent;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace FamilyFlow.Controllers
@@ -35,6 +36,7 @@ namespace FamilyFlow.Controllers
             }
             CreateEditEventViewModel inputModel = new CreateEditEventViewModel()
             {
+                Adults = GetAllAdults().ToList(),
                 FamilyMemberId = id
             };
             return View(inputModel);
@@ -44,6 +46,7 @@ namespace FamilyFlow.Controllers
         [Authorize]
         public IActionResult Create(int id, CreateEditEventViewModel inputModel)
         {
+            inputModel.Adults = GetAllAdults().ToList();
             if (id <= 0)
             {
                 return BadRequest();
@@ -56,6 +59,12 @@ namespace FamilyFlow.Controllers
             if (selectedMember == null)
             {
                 return NotFound();
+            }
+        
+            if (selectedMember.Age <= 12 && !inputModel.AccompanyingAdultId.HasValue)
+            {
+                ModelState.AddModelError(nameof(inputModel.AccompanyingAdultId), "Family member under 12 must have an accompanying adult.");
+                return View(inputModel);
             }
 
             if (!ModelState.IsValid)
@@ -72,6 +81,7 @@ namespace FamilyFlow.Controllers
                     StartTime = inputModel.StartTime,
                     EndTime = inputModel.EndTime,
                     FamilyMemberId = selectedMember.Id,
+                    AccompanyingAdultId = inputModel.Id
                 };
 
                 dbContext.ScheduleEvents.Add(newEvent);
@@ -104,13 +114,15 @@ namespace FamilyFlow.Controllers
                     return NotFound();
                 }
 
-                CreateEditEventViewModel inputModel = new CreateEditEventViewModel()
-                {
-                    Title = selectedEvent.Title,
-                    StartTime = selectedEvent.StartTime,
-                    EndTime = selectedEvent.EndTime,
-                    FamilyMemberId = selectedEvent.FamilyMemberId
-                };
+            CreateEditEventViewModel inputModel = new CreateEditEventViewModel()
+            {
+                Title = selectedEvent.Title,
+                StartTime = selectedEvent.StartTime,
+                EndTime = selectedEvent.EndTime,
+                FamilyMemberId = selectedEvent.FamilyMemberId,
+                AccompanyingAdultId = selectedEvent.AccompanyingAdultId,
+                    Adults = GetAllAdults().ToList()
+            };
 
                 return View(inputModel);
             }
@@ -119,6 +131,7 @@ namespace FamilyFlow.Controllers
         [Authorize]
         public IActionResult Edit(int id, CreateEditEventViewModel inputModel)
             {
+                inputModel.Adults = GetAllAdults().ToList();
                 if (id <= 0)
                 {
                     return BadRequest();
@@ -126,6 +139,7 @@ namespace FamilyFlow.Controllers
 
                 ScheduleEvent? selectedEvent = dbContext
                     .ScheduleEvents
+                    .Include(se => se.FamilyMemberScheduleEvents)
                     .SingleOrDefault(e => e.Id == id);
 
                 if (selectedEvent == null)
@@ -139,11 +153,18 @@ namespace FamilyFlow.Controllers
                     return View(inputModel);
                 }
 
+                if (selectedEvent.FamilyMemberScheduleEvents.Age <= 12 && !inputModel.AccompanyingAdultId.HasValue)
+                {
+                    ModelState.AddModelError(nameof(inputModel.AccompanyingAdultId),"Family member under 12 must have an accompanying adult.");
+                    return View(inputModel);
+                }
+                
                 try
                 {
                     selectedEvent.Title = inputModel.Title;
                     selectedEvent.StartTime = inputModel.StartTime;
                     selectedEvent.EndTime = inputModel.EndTime;
+                    selectedEvent.AccompanyingAdultId = inputModel.AccompanyingAdultId;
 
                     dbContext.SaveChanges();
                     return RedirectToAction("Details", "FamilyMembers", new { id = selectedEvent.FamilyMemberId });
@@ -216,5 +237,19 @@ namespace FamilyFlow.Controllers
                     return View(viewModel);
                 }
             }
+        private IEnumerable<CreateEditAdultViewModel> GetAllAdults()
+        {
+            return dbContext
+             .FamilyMembers
+             .AsNoTracking()
+             .Where(a => a.Age >= 18)
+             .OrderBy(a => a.Name)
+             .Select(a => new CreateEditAdultViewModel()
+             {
+                 Id = a.Id,
+                 Name = a.Name
+             })
+             .ToArray();
+        }
     }
 }

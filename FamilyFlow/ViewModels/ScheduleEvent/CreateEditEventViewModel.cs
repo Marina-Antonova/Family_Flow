@@ -20,6 +20,11 @@ namespace FamilyFlow.ViewModels.ScheduleEvent
         public DateTime EndTime { get; set; }
 
         public int FamilyMemberId { get; set; }
+
+        public int? AccompanyingAdultId { get; set; }
+
+        public ICollection<CreateEditAdultViewModel> Adults { get; set; }
+            = new List<CreateEditAdultViewModel>();
     }
 
 }

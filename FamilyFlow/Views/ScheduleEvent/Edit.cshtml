@@ -33,6 +33,15 @@
         <span asp-validation-for="EndTime" class="text-danger"></span>
     </div>
 
+    <div class="mb-3">
+        <label asp-for="AccompanyingAdultId" class="form-label-add-edit">Select Adult</label>
+        <select asp-for="AccompanyingAdultId" class="form-control" aria-required="true"
+                asp-items="@(new SelectList(Model.Adults, "Id", "Name"))">
+            <option value="">Select Adult...</option>
+        </select>
+        <span asp-validation-for="AccompanyingAdultId" class="text-danger"></span>
+    </div>
+
     <button type="submit" class="btn btn-primary">Save</button>
     <a asp-controller="FamilyMembers"
        asp-action="Details"
