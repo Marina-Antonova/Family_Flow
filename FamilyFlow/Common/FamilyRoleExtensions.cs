@@ -14,7 +14,8 @@ namespace FamilyFlow.Common
                 FamilyRole.Son => "/images/son.png",
                 FamilyRole.Grandmother => "/images/grandmother.png",
                 FamilyRole.Grandfather => "/images/grandfather.png",
-                _ => "/images/roles/default.png"
+                FamilyRole.Other => "/images/default.png",
+                _ => "/images/default.png"
             };
         }
     }

@@ -1,0 +1,69 @@
+﻿@model IEnumerable<ScheduleItemViewModel>
+
+@{
+    ViewData["Title"] = "Family Schedule";
+}
+
+<h2 class="mb-4">Family Schedule</h2>
+
+<table class="table table-striped table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>Family Member</th>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Start Time</th>
+            <th>End Time / Due Date</th>
+            <th>Accompanying Adult</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            dynamic scheduleItem = item;
+
+            <tr>
+                <td>@scheduleItem.FamilyMemberName</td>
+                <td>@scheduleItem.Title</td>
+                <td>
+                    @if (scheduleItem.Type == "Event")
+                    {
+                        <span class="badge bg-primary">Event</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">Task</span>
+                    }
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(scheduleItem.StartTime))
+                    {
+                        @scheduleItem.StartTime
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </td>
+                <td>@scheduleItem.EndTime</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(scheduleItem.AccompanyingAdultName))
+                    {
+                        @scheduleItem.AccompanyingAdultName
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info mt-3">
+        No scheduled events or tasks found.
+    </div>
+}
