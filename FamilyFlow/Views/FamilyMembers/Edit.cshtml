@@ -40,14 +40,9 @@
                         <div class="col-12 col-md-8">
                             <label asp-for="Role" class="form-label"></label>
                             <select asp-for="Role"
-                                    class="form-select">
-                                <option value="">Choose role...</option>
-                                @foreach (var role in Html.GetEnumSelectList<FamilyRole>())
-                                {
-                                    <option value="@role.Value">
-                                        @role.Text
-                                    </option>
-                                }
+                                    asp-items="Html.GetEnumSelectList<FamilyRole>()"
+                                        class="form-select">
+                               <option value="">Choose role...</option>
                             </select>
                             <span asp-validation-for="Role" class="text-danger"></span>
                         </div>

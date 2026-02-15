@@ -147,7 +147,7 @@ namespace FamilyFlow.Controllers
             {
                 Id = selectedMember.Id,
                 Name = selectedMember.Name,
-                Role = selectedMember.Role.ToString(),
+                Role = selectedMember.Role,
                 Age = selectedMember.Age
             };
             return View(inputModel);
@@ -177,15 +177,10 @@ namespace FamilyFlow.Controllers
                 return NotFound();
             }
 
-            if (Enum.TryParse<FamilyRole>(inputModel.Role, out var role))
-            {
-                selectedMember.Role = role;
-            }
-
             try
             {
                 selectedMember.Name = inputModel.Name;
-                selectedMember.Role = role;
+                selectedMember.Role = inputModel.Role.Value;
                 selectedMember.Age = inputModel.Age;
 
                 dbContext.SaveChanges();

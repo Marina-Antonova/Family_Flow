@@ -6,12 +6,12 @@ namespace FamilyFlow.ViewModels.Schedule
 {
     public class ScheduleItemViewModel
     {
-        public string FamilyMemberName { get; set; }
-        public string Title { get; set; }
-        public string Type { get; set; }
-        public string StartTime { get; set; }
-        public string EndTime { get; set; }
-        public string AccompanyingAdultName { get; set; }
+        public string FamilyMemberName { get; set; } = null!;
+        public string Title { get; set; } = null!;
+        public string Type { get; set; } = null!;
+        public DateTime? StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+        public string? AccompanyingAdultName { get; set; }
 
     }
 }

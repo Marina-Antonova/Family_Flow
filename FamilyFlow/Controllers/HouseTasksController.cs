@@ -1,10 +1,12 @@
-﻿using FamilyFlow.Data;
+﻿using Azure.Messaging;
+using FamilyFlow.Data;
 using FamilyFlow.Data.Models;
+using static FamilyFlow.Common.ApplicationConstaints;
 using FamilyFlow.ViewModels.FamilyMember;
 using FamilyFlow.ViewModels.HouseTasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualBasic;
+
 
 
 namespace FamilyFlow.Controllers
@@ -37,7 +39,7 @@ namespace FamilyFlow.Controllers
 
             CreateEditTaskViewModel inputModel = new CreateEditTaskViewModel()
             {
-                FamilyMemberId = id
+                FamilyMemberId = id,
             };
 
             return View(inputModel);
@@ -60,6 +62,12 @@ namespace FamilyFlow.Controllers
             if (selectedMember == null)
             {
                 return NotFound();
+            }
+
+            if(inputModel.DueDate <= DateTime.Now)
+            {
+                ModelState.AddModelError(nameof(inputModel.DueDate), "Due Date must be later than now");
+                return View(inputModel);
             }
 
             if (!ModelState.IsValid)
@@ -141,6 +149,12 @@ namespace FamilyFlow.Controllers
             if (selectedTask == null)
             {
                 return NotFound();
+            }
+
+            if (inputModel.DueDate <= DateTime.Now)
+            {
+                ModelState.AddModelError(nameof(inputModel.DueDate), "Due Date must be later than now");
+                return View(inputModel);
             }
 
             try

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FamilyFlow.Data.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 using static FamilyFlow.Common.ValidationConstants.FamilyMember;
 
 namespace FamilyFlow.ViewModels.FamilyMember
@@ -12,8 +13,7 @@ namespace FamilyFlow.ViewModels.FamilyMember
         [MaxLength(NameMaxLength)]
         public string Name { get; set; } = null!;
 
-        [Required]
-        public string Role { get; set; } = null!;
+        public FamilyRole? Role { get; set; } 
 
         [Range(MinAge, MaxAge)]
         public int Age { get; set; }

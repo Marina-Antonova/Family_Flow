@@ -20,7 +20,7 @@ namespace FamilyFlow.ViewModels.HouseTasks
         public string? Description { get; set; }
 
         [Required]
-        public DateTime DueDate { get; set; }
+        public DateTime DueDate { get; set; } = DateTime.Now;
 
         [Required]
         public int FamilyMemberId { get; set; }

@@ -14,10 +14,10 @@ namespace FamilyFlow.ViewModels.ScheduleEvent
         public string Title { get; set; } = null!;
 
         [Required]
-        public DateTime StartTime { get; set; }
+        public DateTime StartTime { get; set; } = DateTime.Now;
 
         [Required]
-        public DateTime EndTime { get; set; }
+        public DateTime EndTime { get; set; } = DateTime.Now.AddHours(1);
 
         public int FamilyMemberId { get; set; }
 

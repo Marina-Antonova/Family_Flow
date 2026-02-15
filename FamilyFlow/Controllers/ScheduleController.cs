@@ -24,8 +24,8 @@ namespace FamilyFlow.Controllers
                     FamilyMemberName = e.FamilyMemberScheduleEvents.Name,
                     Title = e.Title,
                     Type = "Event",
-                    StartTime = e.StartTime.ToString(),
-                    EndTime = e.EndTime.ToString(),
+                    StartTime = e.StartTime,
+                    EndTime = e.EndTime,
                     AccompanyingAdultName = e.AccompanyingAdult.Name
                  });
 
@@ -36,7 +36,7 @@ namespace FamilyFlow.Controllers
                     Title = t.Title,
                     Type = "Task",
                     StartTime = null,
-                    EndTime = t.DueDate.ToString(),
+                    EndTime = t.DueDate,
                     AccompanyingAdultName = null
                 });
 

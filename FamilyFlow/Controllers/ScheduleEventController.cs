@@ -34,6 +34,7 @@ namespace FamilyFlow.Controllers
             {
                 return NotFound();
             }
+
             CreateEditEventViewModel inputModel = new CreateEditEventViewModel()
             {
                 Adults = GetAllAdults().ToList(),
@@ -47,6 +48,7 @@ namespace FamilyFlow.Controllers
         public IActionResult Create(int id, CreateEditEventViewModel inputModel)
         {
             inputModel.Adults = GetAllAdults().ToList();
+
             if (id <= 0)
             {
                 return BadRequest();
@@ -64,6 +66,12 @@ namespace FamilyFlow.Controllers
             if (selectedMember.Age <= 12 && !inputModel.AccompanyingAdultId.HasValue)
             {
                 ModelState.AddModelError(nameof(inputModel.AccompanyingAdultId), "Family member under 12 must have an accompanying adult.");
+                return View(inputModel);
+            }
+
+            if (inputModel.StartTime >= inputModel.EndTime)
+            {
+                ModelState.AddModelError(nameof(inputModel.StartTime), "Start Time must be earlier than the End Time");
                 return View(inputModel);
             }
 
@@ -145,6 +153,12 @@ namespace FamilyFlow.Controllers
                 if (selectedEvent == null)
                 {
                     return NotFound();
+                }
+
+                if (inputModel.StartTime >= inputModel.EndTime)
+                {
+                    ModelState.AddModelError(nameof(inputModel.StartTime), "Start Time must be earlier than the End Time");
+                    return View(inputModel);
                 }
 
                 if (!ModelState.IsValid)

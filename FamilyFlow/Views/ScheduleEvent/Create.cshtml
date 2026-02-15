@@ -1,9 +1,11 @@
-﻿@model CreateEditEventViewModel
+﻿@using System.Globalization
+@using static FamilyFlow.Common.ApplicationConstaints
+
+@model CreateEditEventViewModel
 
 @{
     ViewData["Title"] = "Create Schedule Event";
 }
-
 
 <h2>Create Schedule Event</h2>
 
@@ -21,6 +23,7 @@
     <div class="mb-3">
         <label asp-for="StartTime" class="form-label"></label>
         <input asp-for="StartTime"
+               asp-format="{0:yyyy-MM-ddTHH:mm}"
                class="form-control"
                type="datetime-local" />
         <span asp-validation-for="StartTime" class="text-danger"></span>
@@ -29,20 +32,24 @@
     <div class="mb-3">
         <label asp-for="EndTime" class="form-label"></label>
         <input asp-for="EndTime"
+               asp-format="{0:yyyy-MM-ddTHH:mm}"
                class="form-control"
                type="datetime-local" />
         <span asp-validation-for="EndTime" class="text-danger"></span>
     </div>
 
-    <div class="mb-3">
-        <label asp-for="AccompanyingAdultId" class="form-label-add-edit">Select Adult</label>
-        <select asp-for="AccompanyingAdultId" class="form-control" aria-required="true"
-                asp-items="@(new SelectList(Model.Adults, "Id", "Name"))">
-            <option value="">Select Adult...</option>
-        </select>
-        <span asp-validation-for="AccompanyingAdultId" class="text-danger"></span>
-    </div>
-
+    @if (Model.Adults.All(a => a.Id != Model.FamilyMemberId))
+    {
+        <div class="mb-3">
+            <label asp-for="AccompanyingAdultId" class="form-label-add-edit">Select Adult</label>
+            <select asp-for="AccompanyingAdultId" class="form-control" aria-required="true"
+                    asp-items="@(new SelectList(Model.Adults, "Id", "Name"))">
+                <option value="">Select Adult...</option>
+            </select>
+            <span asp-validation-for="AccompanyingAdultId" class="text-danger"></span>
+        </div>
+    }
+    
     <button type="submit" class="btn btn-primary">Create</button>
     <a asp-controller="FamilyMembers"
        asp-action="Details"
