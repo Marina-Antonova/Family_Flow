@@ -8,14 +8,14 @@ namespace FamilyFlow.Common
         {
             return role switch
             {
-                FamilyRole.Mother => "/images/mother.png",
-                FamilyRole.Father => "/images/father.png",
-                FamilyRole.Daughter => "/images/daughter.png",
-                FamilyRole.Son => "/images/son.png",
-                FamilyRole.Grandmother => "/images/grandmother.png",
-                FamilyRole.Grandfather => "/images/grandfather.png",
-                FamilyRole.Other => "/images/default.png",
-                _ => "/images/default.png"
+                FamilyRole.Mother => "/images/role/mother.png",
+                FamilyRole.Father => "/images/role/father.png",
+                FamilyRole.Daughter => "/images/role/daughter.png",
+                FamilyRole.Son => "/images/role/son.png",
+                FamilyRole.Grandmother => "/images/role/grandmother.png",
+                FamilyRole.Grandfather => "/images/role/grandfather.png",
+                FamilyRole.Other => "/images/role/default.png",
+                _ => "/images/role/default.png"
             };
         }
     }
