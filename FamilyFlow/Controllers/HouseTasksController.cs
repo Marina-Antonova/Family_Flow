@@ -64,9 +64,9 @@ namespace FamilyFlow.Controllers
                 return NotFound();
             }
 
-            if(inputModel.DueDate <= DateTime.Now)
+            if(inputModel.DueDate < DateTime.Today)
             {
-                ModelState.AddModelError(nameof(inputModel.DueDate), "Due Date must be later than now");
+                ModelState.AddModelError(nameof(inputModel.DueDate), "Due Date cannot be in the past.");
                 return View(inputModel);
             }
 
@@ -151,9 +151,9 @@ namespace FamilyFlow.Controllers
                 return NotFound();
             }
 
-            if (inputModel.DueDate <= DateTime.Now)
+            if (inputModel.DueDate < DateTime.Today)
             {
-                ModelState.AddModelError(nameof(inputModel.DueDate), "Due Date must be later than now");
+                ModelState.AddModelError(nameof(inputModel.DueDate), "Due Date cannot be in the past.");
                 return View(inputModel);
             }
 
