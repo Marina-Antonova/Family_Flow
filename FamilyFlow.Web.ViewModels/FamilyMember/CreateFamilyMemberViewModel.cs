@@ -1,6 +1,6 @@
 ﻿using FamilyFlow.Data.Models.Enums;
 using System.ComponentModel.DataAnnotations;
-using static FamilyFlow.Common.ValidationConstants.FamilyMember;
+using static FamilyFlow.GCommon.ValidationConstants.FamilyMember;
 
 namespace FamilyFlow.ViewModels.FamilyMember
 {

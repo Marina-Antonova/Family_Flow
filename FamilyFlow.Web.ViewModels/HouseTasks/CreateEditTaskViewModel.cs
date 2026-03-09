@@ -1,7 +1,6 @@
 ﻿using FamilyFlow.Data.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
-using static FamilyFlow.Common.ValidationConstants.HouseTask;
+using static FamilyFlow.GCommon.ValidationConstants.HouseTask;
 
 namespace FamilyFlow.ViewModels.HouseTasks
 {

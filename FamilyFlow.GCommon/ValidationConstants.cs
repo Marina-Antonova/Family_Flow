@@ -1,4 +1,4 @@
-﻿namespace FamilyFlow.Common
+﻿namespace FamilyFlow.GCommon
 {
     public static class ValidationConstants
     {

@@ -1,6 +1,4 @@
-﻿using FamilyFlow.Data.Models;
-
-namespace FamilyFlow.ViewModels.FamilyMember
+﻿namespace FamilyFlow.ViewModels.FamilyMember
 {
     public class AllFamilyMembersViewModel
     {

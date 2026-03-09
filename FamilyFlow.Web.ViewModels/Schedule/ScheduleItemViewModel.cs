@@ -1,5 +1,4 @@
 ﻿using FamilyFlow.Data.Models;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System.Globalization;
 
 namespace FamilyFlow.ViewModels.Schedule

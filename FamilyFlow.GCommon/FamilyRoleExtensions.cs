@@ -1,6 +1,6 @@
 ﻿using FamilyFlow.Data.Models.Enums;
 
-namespace FamilyFlow.Common
+namespace FamilyFlow.GCommon
 {
     public static class FamilyRoleExtensions
     {

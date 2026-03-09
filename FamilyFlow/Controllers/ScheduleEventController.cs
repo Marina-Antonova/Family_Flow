@@ -1,11 +1,9 @@
 ﻿using FamilyFlow.Data;
 using FamilyFlow.Data.Models;
-using FamilyFlow.ViewModels.HouseTasks;
 using FamilyFlow.ViewModels.ScheduleEvent;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 
 namespace FamilyFlow.Controllers
 {

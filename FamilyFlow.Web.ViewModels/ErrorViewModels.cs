@@ -1,4 +1,4 @@
-namespace FamilyFlow.ViewModels
+﻿namespace FamilyFlow.ViewModels
 {
     public class ErrorViewModel
     {

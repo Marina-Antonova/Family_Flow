@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using static FamilyFlow.Common.ValidationConstants.ScheduleEvent;
+using static FamilyFlow.GCommon.ValidationConstants.ScheduleEvent;
 
 namespace FamilyFlow.ViewModels.ScheduleEvent
 {

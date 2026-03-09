@@ -1,7 +1,6 @@
-﻿using FamilyFlow.Common;
-using FamilyFlow.Data;
+﻿using FamilyFlow.Data;
 using FamilyFlow.Data.Models;
-using FamilyFlow.Data.Models.Enums;
+using FamilyFlow.GCommon;
 using FamilyFlow.ViewModels.FamilyMember;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

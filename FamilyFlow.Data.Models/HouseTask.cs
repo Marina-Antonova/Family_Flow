@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static FamilyFlow.Common.ValidationConstants.HouseTask;
+using static FamilyFlow.GCommon.ValidationConstants.HouseTask;
 
 namespace FamilyFlow.Data.Models
 {

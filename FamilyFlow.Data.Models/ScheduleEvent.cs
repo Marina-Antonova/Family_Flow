@@ -1,7 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using static FamilyFlow.Common.ValidationConstants.ScheduleEvent;
+﻿using System.ComponentModel.DataAnnotations;
+using static FamilyFlow.GCommon.ValidationConstants.ScheduleEvent;
 
 namespace FamilyFlow.Data.Models
 {
