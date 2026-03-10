@@ -1,7 +1,4 @@
-﻿using FamilyFlow.Data.Models;
-using System.Globalization;
-
-namespace FamilyFlow.ViewModels.Schedule
+﻿namespace FamilyFlow.ViewModels.Schedule
 {
     public class ScheduleItemViewModel
     {

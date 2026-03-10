@@ -1,4 +1,4 @@
-﻿using FamilyFlow.Data.Models.Enums;
+﻿using FamilyFlow.GCommon.Enums;
 using System.ComponentModel.DataAnnotations;
 using static FamilyFlow.GCommon.ValidationConstants.FamilyMember;
 

@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using FamilyFlow.Data.Models.Enums;
+using FamilyFlow.GCommon.Enums;
 using static FamilyFlow.GCommon.ValidationConstants.FamilyMember;
 
 namespace FamilyFlow.Data.Models

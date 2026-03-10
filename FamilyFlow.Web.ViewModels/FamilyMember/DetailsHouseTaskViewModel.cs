@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace FamilyFlow.ViewModels.FamilyMember
+﻿namespace FamilyFlow.ViewModels.FamilyMember
 {
     public class DetailsHouseTaskViewModel
     {

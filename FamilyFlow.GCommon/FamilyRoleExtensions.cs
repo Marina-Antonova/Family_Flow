@@ -1,4 +1,4 @@
-﻿using FamilyFlow.Data.Models.Enums;
+﻿using FamilyFlow.GCommon.Enums;
 
 namespace FamilyFlow.GCommon
 {

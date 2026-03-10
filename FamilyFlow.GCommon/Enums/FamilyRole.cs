@@ -1,4 +1,4 @@
-﻿namespace FamilyFlow.Data.Models.Enums
+﻿namespace FamilyFlow.GCommon.Enums
 {
     public enum FamilyRole
     {
