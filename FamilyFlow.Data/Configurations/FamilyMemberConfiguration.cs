@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using FamilyFlow.Data.Models;
-using FamilyFlow.Data.Models.Enums;
+using FamilyFlow.GCommon.Enums;
 
 namespace FamilyFlow.Data.Configurations
 {

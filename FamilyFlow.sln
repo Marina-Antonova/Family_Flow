@@ -17,6 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyFlow.Data.Models", "F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyFlow.Data", "FamilyFlow.Data\FamilyFlow.Data.csproj", "{C4C2B47B-3A4F-404B-B8A3-A35BC22BF8CC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{360DC6CB-E4D8-4782-BEA9-E6CA0F65AA9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FamilyFlow.Services.Core", "FamilyFlow.Serices.Core\FamilyFlow.Services.Core.csproj", "{95AE2E57-B0E9-41BD-8123-AEC1495D513E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +47,10 @@ Global
 		{C4C2B47B-3A4F-404B-B8A3-A35BC22BF8CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4C2B47B-3A4F-404B-B8A3-A35BC22BF8CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4C2B47B-3A4F-404B-B8A3-A35BC22BF8CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95AE2E57-B0E9-41BD-8123-AEC1495D513E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95AE2E57-B0E9-41BD-8123-AEC1495D513E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95AE2E57-B0E9-41BD-8123-AEC1495D513E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95AE2E57-B0E9-41BD-8123-AEC1495D513E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,6 +60,7 @@ Global
 		{087FEB43-9919-440F-BABF-2E66986CC40D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{B97B5515-F4E1-49B3-BA7F-64EB66739894} = {A652E2F9-0D25-4DD6-9916-115D486AF7EB}
 		{C4C2B47B-3A4F-404B-B8A3-A35BC22BF8CC} = {A652E2F9-0D25-4DD6-9916-115D486AF7EB}
+		{95AE2E57-B0E9-41BD-8123-AEC1495D513E} = {360DC6CB-E4D8-4782-BEA9-E6CA0F65AA9E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B709F3AE-63A6-4F4A-9BD8-EA65F95F6A1D}

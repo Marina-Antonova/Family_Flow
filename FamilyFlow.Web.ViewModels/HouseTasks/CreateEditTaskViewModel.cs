@@ -1,5 +1,4 @@
-﻿using FamilyFlow.Data.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using static FamilyFlow.GCommon.ValidationConstants.HouseTask;
 
 namespace FamilyFlow.ViewModels.HouseTasks

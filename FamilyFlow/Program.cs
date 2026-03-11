@@ -1,4 +1,6 @@
 using FamilyFlow.Data;
+using FamilyFlow.Services.Core;
+using FamilyFlow.Services.Core.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +21,8 @@ namespace FamilyFlow
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<FamilyFlowDbContext>();
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddScoped<IFamilyMemberService, FamilyMemberService>();
 
             var app = builder.Build();
 

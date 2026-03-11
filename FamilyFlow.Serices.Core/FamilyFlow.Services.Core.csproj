@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FamilyFlow.Data.Models\FamilyFlow.Data.Models.csproj" />
+    <ProjectReference Include="..\FamilyFlow.Data\FamilyFlow.Data.csproj" />
+    <ProjectReference Include="..\FamilyFlow.GCommon\FamilyFlow.GCommon.csproj" />
+    <ProjectReference Include="..\FamilyFlow.Web.ViewModels\FamilyFlow.Web.ViewModels.csproj" />
+  </ItemGroup>
+
+</Project>
