@@ -23,6 +23,7 @@ namespace FamilyFlow
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddScoped<IFamilyMemberService, FamilyMemberService>();
+            builder.Services.AddScoped<IHouseTaskService, HouseTaskService>();
 
             var app = builder.Build();
 

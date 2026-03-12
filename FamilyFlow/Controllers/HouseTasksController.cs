@@ -1,64 +1,46 @@
 ﻿using FamilyFlow.Data;
-using FamilyFlow.Data.Models;
+using FamilyFlow.Services.Core.Interfaces;
 using FamilyFlow.ViewModels.HouseTasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
-
 
 namespace FamilyFlow.Controllers
 {
     public class HouseTasksController : Controller
     {
-        private readonly FamilyFlowDbContext dbContext;
-        public HouseTasksController(FamilyFlowDbContext dbContext)
+        private readonly IHouseTaskService houseTaskService;
+        public HouseTasksController(FamilyFlowDbContext dbContext, IHouseTaskService houseTaskService)
         {
-            this.dbContext = dbContext;
+            this.houseTaskService = houseTaskService;
         }
 
         [HttpGet]
         [Authorize]
-        public IActionResult Create(int id)
+        public async Task<IActionResult> Create(int id)
         {
             if (id <= 0)
             {
                 return BadRequest();
             }
 
-            FamilyMember? selectedMember = dbContext
-                 .FamilyMembers
-                 .SingleOrDefault(fm => fm.Id == id);
+            var inputModel = await houseTaskService.GetForCreateHouseTaskViewModelAsync(id);
 
-            if (selectedMember == null)
+            if (inputModel == null)
             {
                 return NotFound();
             }
-
-            CreateEditTaskViewModel inputModel = new CreateEditTaskViewModel()
-            {
-                FamilyMemberId = id,
-            };
 
             return View(inputModel);
         }
 
         [HttpPost]
         [Authorize]
-        public IActionResult Create(int id, CreateEditTaskViewModel inputModel)
+        public async Task<IActionResult> Create(int id, CreateEditTaskViewModel inputModel)
         {
 
             if (id <= 0)
             {
                 return BadRequest();
-            }
-
-            FamilyMember? selectedMember = dbContext
-              .FamilyMembers
-              .SingleOrDefault(fm => fm.Id == id);
-
-            if (selectedMember == null)
-            {
-                return NotFound();
             }
 
             if(inputModel.DueDate < DateTime.Today)
@@ -75,17 +57,9 @@ namespace FamilyFlow.Controllers
 
             try
             {
-                HouseTask task = new HouseTask()
-                {
-                    Title = inputModel.Title,
-                    Description = inputModel.Description,
-                    DueDate = inputModel.DueDate,
-                    IsCompleted = false,
-                    FamilyMemberId = selectedMember.Id,
-                };
-                dbContext.HouseTasks.Add(task);
-                dbContext.SaveChanges();
-                return RedirectToAction("Details", "FamilyMembers", new { id = selectedMember.Id });
+                await houseTaskService.CreateHouseTaskAsync(id, inputModel);
+
+                return RedirectToAction("Details", "FamilyMembers", new { id });
             }
             catch (Exception e)
             {
@@ -97,55 +71,36 @@ namespace FamilyFlow.Controllers
 
         [HttpGet]
         [Authorize]
-        public IActionResult Edit(int id)
+        public async Task <IActionResult> Edit(int id)
         {
             if (id <= 0)
             {
                 return BadRequest();
             }
 
-            HouseTask? selectedTask = dbContext
-                .HouseTasks
-                .SingleOrDefault(t => t.Id == id);
+            var selectedTask = await houseTaskService.GetForEditHouseTaskViewModelAsync(id);
 
             if (selectedTask == null)
             {
                 return NotFound();
             }
 
-            CreateEditTaskViewModel inputModel = new CreateEditTaskViewModel()
-            {
-                Title = selectedTask.Title,
-                Description = selectedTask.Description,
-                DueDate = selectedTask.DueDate,
-                FamilyMemberId = selectedTask.FamilyMemberId
-            };
-
-            return View(inputModel);
+            return View(selectedTask);
         }
 
         [HttpPost]
         [Authorize]
-        public IActionResult Edit(int id, CreateEditTaskViewModel inputModel)
+        public async Task <IActionResult> Edit(int id, CreateEditTaskViewModel inputModel)
         {
-            if (!ModelState.IsValid)
-            {
-                ModelState.AddModelError(string.Empty, "Model Validation failed.");
-                return View(inputModel);
-            }
-
             if (id <= 0)
             {
                 return BadRequest();
             }
 
-            HouseTask? selectedTask = dbContext
-                 .HouseTasks
-                 .SingleOrDefault(t => t.Id == id);
-
-            if (selectedTask == null)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                ModelState.AddModelError(string.Empty, "Model Validation failed.");
+                return View(inputModel);
             }
 
             if (inputModel.DueDate < DateTime.Today)
@@ -156,13 +111,8 @@ namespace FamilyFlow.Controllers
 
             try
             {
-                selectedTask.Title = inputModel.Title;
-                selectedTask.Description = inputModel.Description;
-                selectedTask.DueDate = inputModel.DueDate;
-                selectedTask.FamilyMemberId = inputModel.FamilyMemberId;
-
-                dbContext.SaveChanges();
-                return RedirectToAction("Details", "FamilyMembers", new { id = selectedTask.FamilyMemberId });
+                await houseTaskService.EditHouseTaskAsync(id, inputModel);
+                return RedirectToAction("Details", "FamilyMembers", new { id = inputModel.FamilyMemberId });
             }
             catch (Exception e)
             {
@@ -174,56 +124,36 @@ namespace FamilyFlow.Controllers
 
         [HttpGet]
         [Authorize]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             if (id <= 0)
             {
                 return BadRequest();
             }
 
-            HouseTask? selectedTask = dbContext
-                 .HouseTasks
-                 .SingleOrDefault(t => t.Id == id);
+         var selectedTask = await houseTaskService.GetForDeleteHouseTaskViewModelAsync(id);
 
             if (selectedTask == null)
             {
                 return NotFound();
             }
 
-            DeleteTaskViewModel viewModel = new DeleteTaskViewModel()
-            {
-                Title = selectedTask.Title,
-                DueDate = selectedTask.DueDate.ToString(),
-                FamilyMemberId = selectedTask.FamilyMemberId
-               
-            };
-
-            return View(viewModel);
+            return View(selectedTask);
         }
 
         [HttpPost]
         [Authorize]
-        public IActionResult Delete(int id, DeleteTaskViewModel viewModel)
+        public async Task<IActionResult> Delete(int id, DeleteTaskViewModel viewModel)
         {
             if (id <= 0)
             {
                 return BadRequest();
             }
 
-            HouseTask? selectedTask = dbContext
-                 .HouseTasks
-                 .SingleOrDefault(t => t.Id == id);
-
-            if (selectedTask == null)
-            {
-                return NotFound();
-            }
-
             try
             {
-                dbContext.HouseTasks.Remove(selectedTask);
-                dbContext.SaveChanges();
-                return RedirectToAction("Details", "FamilyMembers", new { id = selectedTask.FamilyMemberId });
+                await houseTaskService.DeleteHouseTaskAsync(id, viewModel);
+                return RedirectToAction("Details", "FamilyMembers", new { id = viewModel.FamilyMemberId });
             }
             catch (Exception e)
             {
