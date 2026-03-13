@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FamilyFlow.Data.Models\FamilyFlow.Data.Models.csproj" />
     <ProjectReference Include="..\FamilyFlow.Data\FamilyFlow.Data.csproj" />
     <ProjectReference Include="..\FamilyFlow.GCommon\FamilyFlow.GCommon.csproj" />
     <ProjectReference Include="..\FamilyFlow.Serices.Core\FamilyFlow.Services.Core.csproj" />

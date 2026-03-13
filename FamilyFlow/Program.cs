@@ -1,6 +1,8 @@
 using FamilyFlow.Data;
+using FamilyFlow.Services;
 using FamilyFlow.Services.Core;
 using FamilyFlow.Services.Core.Interfaces;
+using FamilyFlow.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +27,7 @@ namespace FamilyFlow
             builder.Services.AddScoped<IFamilyMemberService, FamilyMemberService>();
             builder.Services.AddScoped<IHouseTaskService, HouseTaskService>();
             builder.Services.AddScoped<IScheduleEventService, ScheduleEventService>();
+            builder.Services.AddScoped<IScheduleService, ScheduleService>();
 
             var app = builder.Build();
 
