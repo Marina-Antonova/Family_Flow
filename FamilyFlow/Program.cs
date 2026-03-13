@@ -24,6 +24,7 @@ namespace FamilyFlow
 
             builder.Services.AddScoped<IFamilyMemberService, FamilyMemberService>();
             builder.Services.AddScoped<IHouseTaskService, HouseTaskService>();
+            builder.Services.AddScoped<IScheduleEventService, ScheduleEventService>();
 
             var app = builder.Build();
 

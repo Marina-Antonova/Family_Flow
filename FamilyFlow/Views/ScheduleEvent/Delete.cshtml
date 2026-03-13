@@ -39,6 +39,7 @@
 
                 <form asp-action="Delete" method="post" class="mt-4">
                     <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="FamilyMemberId" />
 
                     <div class="d-flex justify-content-end gap-2">
                         <a asp-controller="FamilyMembers"

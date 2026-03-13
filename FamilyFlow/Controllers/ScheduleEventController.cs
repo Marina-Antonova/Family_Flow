@@ -1,76 +1,46 @@
-﻿using FamilyFlow.Data;
-using FamilyFlow.Data.Models;
+﻿using FamilyFlow.Services.Core.Interfaces;
 using FamilyFlow.ViewModels.ScheduleEvent;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace FamilyFlow.Controllers
 {
     public class ScheduleEventController : Controller
     {
-        private readonly FamilyFlowDbContext dbContext;
-        public ScheduleEventController(FamilyFlowDbContext dbContext)
+        private readonly IScheduleEventService scheduleEventService;
+        public ScheduleEventController(IScheduleEventService scheduleEventService)
         {
-            this.dbContext = dbContext;
+            this.scheduleEventService = scheduleEventService;
         }
 
         [HttpGet]
         [Authorize]
-        public IActionResult Create(int id)
+        public async Task <IActionResult> Create(int id)
         {
             if (id <= 0)
             {
                 return BadRequest();
             }
+            var inputModel = await scheduleEventService.GetForCreateScheduleEventViewModelAsync(id);
 
-            FamilyMember? selectedMember = dbContext
-                 .FamilyMembers
-                 .SingleOrDefault(fm => fm.Id == id);
-
-            if (selectedMember == null)
+            if (inputModel == null)
             {
                 return NotFound();
             }
 
-            CreateEditEventViewModel inputModel = new CreateEditEventViewModel()
-            {
-                Adults = GetAllAdults().ToList(),
-                FamilyMemberId = id
-            };
             return View(inputModel);
         }
 
         [HttpPost]
         [Authorize]
-        public IActionResult Create(int id, CreateEditEventViewModel inputModel)
+        public async Task<IActionResult> Create(int id, CreateEditEventViewModel inputModel)
         {
-            inputModel.Adults = GetAllAdults().ToList();
+            inputModel.Adults = scheduleEventService.GetAllAdults().ToList();
 
             if (id <= 0)
             {
                 return BadRequest();
-            }
-
-            FamilyMember? selectedMember = dbContext
-              .FamilyMembers
-              .SingleOrDefault(fm => fm.Id == id);
-
-            if (selectedMember == null)
-            {
-                return NotFound();
-            }
-        
-            if (selectedMember.Age <= 12 && !inputModel.AccompanyingAdultId.HasValue)
-            {
-                ModelState.AddModelError(nameof(inputModel.AccompanyingAdultId), "Family member under 12 must have an accompanying adult.");
-                return View(inputModel);
-            }
-
-            if (inputModel.StartTime >= inputModel.EndTime)
-            {
-                ModelState.AddModelError(nameof(inputModel.StartTime), "Start Time must be earlier than the End Time");
-                return View(inputModel);
             }
 
             if (!ModelState.IsValid)
@@ -79,19 +49,29 @@ namespace FamilyFlow.Controllers
                 return View(inputModel);
             }
 
+            var selectedMember = await scheduleEventService.FindSelectedFamilyMemberAsync(inputModel.FamilyMemberId);
+
+            if (selectedMember == null)
+            {
+                return NotFound();
+            }
+
+            if (selectedMember.Age <= 12 && !inputModel.AccompanyingAdultId.HasValue)
+            {
+                ModelState.AddModelError(nameof(inputModel.AccompanyingAdultId),
+                    "Family member under 12 must have an accompanying adult.");
+                return View(inputModel);
+            }
+        
+            if (inputModel.StartTime >= inputModel.EndTime)
+            {
+                ModelState.AddModelError(nameof(inputModel.StartTime), "Start Time must be earlier than the End Time");
+                return View(inputModel);
+            }
+
             try
             {
-                ScheduleEvent newEvent = new ScheduleEvent()
-                {
-                    Title = inputModel.Title,
-                    StartTime = inputModel.StartTime,
-                    EndTime = inputModel.EndTime,
-                    FamilyMemberId = selectedMember.Id,
-                    AccompanyingAdultId = inputModel.Id
-                };
-
-                dbContext.ScheduleEvents.Add(newEvent);
-                dbContext.SaveChanges();
+                await scheduleEventService.CreateScheduleEventAsync(inputModel);
                 return RedirectToAction("Details", "FamilyMembers", new { id = inputModel.FamilyMemberId });
             }
             catch (Exception e)
@@ -104,59 +84,33 @@ namespace FamilyFlow.Controllers
 
         [HttpGet]
         [Authorize]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
             {
                 if (id <= 0)
                 {
                     return BadRequest();
                 }
 
-                ScheduleEvent? selectedEvent = dbContext
-                    .ScheduleEvents
-                    .SingleOrDefault(e => e.Id == id);
+            var selectedEvent = await scheduleEventService.GetForEditScheduleEventViewModelAsync(id);
+            selectedEvent.Adults = scheduleEventService.GetAllAdults().ToList();
 
-                if (selectedEvent == null)
+            if (selectedEvent == null)
                 {
                     return NotFound();
                 }
 
-            CreateEditEventViewModel inputModel = new CreateEditEventViewModel()
-            {
-                Title = selectedEvent.Title,
-                StartTime = selectedEvent.StartTime,
-                EndTime = selectedEvent.EndTime,
-                FamilyMemberId = selectedEvent.FamilyMemberId,
-                AccompanyingAdultId = selectedEvent.AccompanyingAdultId,
-                    Adults = GetAllAdults().ToList()
-            };
-
-                return View(inputModel);
+                return View(selectedEvent);
             }
 
         [HttpPost]
         [Authorize]
-        public IActionResult Edit(int id, CreateEditEventViewModel inputModel)
+        public async Task<IActionResult> Edit(int id, CreateEditEventViewModel inputModel)
             {
-                inputModel.Adults = GetAllAdults().ToList();
+                inputModel.Adults = scheduleEventService.GetAllAdults().ToList();
+
                 if (id <= 0)
                 {
                     return BadRequest();
-                }
-
-                ScheduleEvent? selectedEvent = dbContext
-                    .ScheduleEvents
-                    .Include(se => se.FamilyMemberScheduleEvents)
-                    .SingleOrDefault(e => e.Id == id);
-
-                if (selectedEvent == null)
-                {
-                    return NotFound();
-                }
-
-                if (inputModel.StartTime >= inputModel.EndTime)
-                {
-                    ModelState.AddModelError(nameof(inputModel.StartTime), "Start Time must be earlier than the End Time");
-                    return View(inputModel);
                 }
 
                 if (!ModelState.IsValid)
@@ -165,7 +119,20 @@ namespace FamilyFlow.Controllers
                     return View(inputModel);
                 }
 
-                if (selectedEvent.FamilyMemberScheduleEvents.Age <= 12 && !inputModel.AccompanyingAdultId.HasValue)
+                if (inputModel.StartTime >= inputModel.EndTime)
+                {
+                    ModelState.AddModelError(nameof(inputModel.StartTime), "Start Time must be earlier than the End Time");
+                    return View(inputModel);
+                }
+
+                var selectedMember = await scheduleEventService.FindSelectedFamilyMemberAsync(inputModel.FamilyMemberId);
+
+                if (selectedMember == null)
+                {
+                    return NotFound();
+                }
+
+                if (selectedMember.Age <= 12 && !inputModel.AccompanyingAdultId.HasValue)
                 {
                     ModelState.AddModelError(nameof(inputModel.AccompanyingAdultId),"Family member under 12 must have an accompanying adult.");
                     return View(inputModel);
@@ -173,13 +140,8 @@ namespace FamilyFlow.Controllers
                 
                 try
                 {
-                    selectedEvent.Title = inputModel.Title;
-                    selectedEvent.StartTime = inputModel.StartTime;
-                    selectedEvent.EndTime = inputModel.EndTime;
-                    selectedEvent.AccompanyingAdultId = inputModel.AccompanyingAdultId;
-
-                    dbContext.SaveChanges();
-                    return RedirectToAction("Details", "FamilyMembers", new { id = selectedEvent.FamilyMemberId });
+                    await scheduleEventService.EditScheduleEventAsync(id, inputModel);
+                    return RedirectToAction("Details", "FamilyMembers", new { id = inputModel.FamilyMemberId });
                 }
                 catch (Exception e)
                 {
@@ -191,56 +153,35 @@ namespace FamilyFlow.Controllers
 
         [HttpGet]
         [Authorize]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
             {
                 if (id <= 0)
                 {
                     return BadRequest();
                 }
 
-                ScheduleEvent? selectedEvent = dbContext
-                    .ScheduleEvents
-                    .SingleOrDefault(e => e.Id == id);
+                var selectedEvent = await scheduleEventService.GetForDeleteScheduleEventViewModelAsync(id);
 
                 if (selectedEvent == null)
-                {
-                    return NotFound();
-                }
+                        {
+                            return NotFound();
+                        }
 
-            DeleteEventViewModel viewModel = new DeleteEventViewModel()
-                {
-                    Title = selectedEvent.Title,
-                    StartTime = selectedEvent.StartTime.ToString(),
-                    EndTime = selectedEvent.EndTime.ToString(),
-                    FamilyMemberId = selectedEvent.FamilyMemberId
-                };
-
-                return View(viewModel);
+                return View(selectedEvent);
             }
 
         [HttpPost]
         [Authorize]
-        public IActionResult Delete(int id, DeleteEventViewModel viewModel)
+        public async Task<IActionResult> Delete(int id, DeleteEventViewModel viewModel)
             {
                 if (id <= 0)
                 {
                     return BadRequest();
                 }
-
-                ScheduleEvent? selectedEvent = dbContext
-                    .ScheduleEvents
-                    .SingleOrDefault(e => e.Id == id);
-
-                if (selectedEvent == null)
-                {
-                    return NotFound();
-                }
-
             try
                 {
-                    dbContext.ScheduleEvents.Remove(selectedEvent);
-                    dbContext.SaveChanges();
-                    return RedirectToAction("Details", "FamilyMembers", new { id = selectedEvent.FamilyMemberId });
+                    await scheduleEventService.DeleteScheduleEventAsync(id, viewModel);
+                    return RedirectToAction("Details", "FamilyMembers", new { id = viewModel.FamilyMemberId });
                 }
                 catch (Exception e)
                 {
@@ -249,19 +190,5 @@ namespace FamilyFlow.Controllers
                     return View(viewModel);
                 }
             }
-        private IEnumerable<CreateEditAdultViewModel> GetAllAdults()
-        {
-            return dbContext
-             .FamilyMembers
-             .AsNoTracking()
-             .Where(a => a.Age >= 18)
-             .OrderBy(a => a.Name)
-             .Select(a => new CreateEditAdultViewModel()
-             {
-                 Id = a.Id,
-                 Name = a.Name
-             })
-             .ToArray();
-        }
     }
 }
