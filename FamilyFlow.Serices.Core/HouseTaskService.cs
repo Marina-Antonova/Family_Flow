@@ -23,6 +23,7 @@ namespace FamilyFlow.Services.Core
         {
             FamilyMember? selectedMember = await dbContext
                 .FamilyMembers
+                .AsNoTracking()
                 .FirstOrDefaultAsync(f => f.Id == familyMemberId);
 
             if (selectedMember == null)
