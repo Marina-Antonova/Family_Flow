@@ -59,7 +59,7 @@ namespace FamilyFlow.Data.Configurations
                 .HasForeignKey(se => se.AccompanyingAdultId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            entity.HasData(Events);
+            //entity.HasData(Events);
         }
     }
 }

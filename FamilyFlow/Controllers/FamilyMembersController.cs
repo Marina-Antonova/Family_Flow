@@ -1,6 +1,7 @@
 ﻿using FamilyFlow.Services.Core.Interfaces;
 using FamilyFlow.ViewModels.FamilyMember;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -9,18 +10,22 @@ namespace FamilyFlow.Controllers
     public class FamilyMembersController : Controller
     {
         private readonly IFamilyMemberService familyMemberService;
+        private readonly UserManager<IdentityUser> userManager;
 
-        public FamilyMembersController(IFamilyMemberService familyMemberService)
+        public FamilyMembersController(IFamilyMemberService familyMemberService, UserManager<IdentityUser> userManager)
         {
             this.familyMemberService = familyMemberService;
+            this.userManager = userManager;
         }
 
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> All()
         {
+            string userId = userManager.GetUserId(User);
+
             IEnumerable<AllFamilyMembersViewModel> members = await familyMemberService
-            .GetAllFamilyMembersAsync();
+            .GetAllFamilyMembersAsync(userId);
             return View(members);
         }
 

@@ -67,7 +67,7 @@ namespace FamilyFlow.Data.Configurations
         public void Configure(EntityTypeBuilder<HouseTask> entity)
         {
 
-            entity.HasData(Tasks);
+            //entity.HasData(Tasks);
  
         }
     }

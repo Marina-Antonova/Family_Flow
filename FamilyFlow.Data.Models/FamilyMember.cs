@@ -1,5 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using FamilyFlow.GCommon.Enums;
+﻿using FamilyFlow.GCommon.Enums;
+using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using static FamilyFlow.GCommon.ValidationConstants.FamilyMember;
 
 namespace FamilyFlow.Data.Models
@@ -24,5 +25,11 @@ namespace FamilyFlow.Data.Models
                 = new List<ScheduleEvent>();
         public virtual ICollection<ScheduleEvent> AccompanyEvents { get; set; } 
                 = new List<ScheduleEvent>();
+
+        [Required]
+        public string UserId { get; set; } = null!;
+
+        public IdentityUser User { get; set; } = null!;
+
     }
 }

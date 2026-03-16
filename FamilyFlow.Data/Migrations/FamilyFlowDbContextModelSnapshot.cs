@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FamilyFlow.Data.Migrations
 {
     [DbContext(typeof(FamilyFlowDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    partial class FamilyFlowDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -30,7 +30,7 @@ namespace FamilyFlow.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("Age")
+                    b.Property<int>("Age")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -41,39 +41,15 @@ namespace FamilyFlow.Data.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("FamilyMembers");
+                    b.HasIndex("UserId");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Age = 40,
-                            Name = "Alice",
-                            Role = 0
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Age = 42,
-                            Name = "Bob",
-                            Role = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Age = 12,
-                            Name = "Charlie",
-                            Role = 2
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Age = 10,
-                            Name = "Daisy",
-                            Role = 3
-                        });
+                    b.ToTable("FamilyMembers");
                 });
 
             modelBuilder.Entity("FamilyFlow.Data.Models.HouseTask", b =>
@@ -107,62 +83,6 @@ namespace FamilyFlow.Data.Migrations
                     b.HasIndex("FamilyMemberId");
 
                     b.ToTable("HouseTasks");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Wipe down counters and mop the floor",
-                            DueDate = new DateTime(2026, 2, 15, 11, 59, 37, 208, DateTimeKind.Local).AddTicks(6204),
-                            FamilyMemberId = 1,
-                            IsCompleted = false,
-                            Title = "Clean the kitchen"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Mow the front and back yard",
-                            DueDate = new DateTime(2026, 2, 16, 11, 59, 37, 208, DateTimeKind.Local).AddTicks(6278),
-                            FamilyMemberId = 2,
-                            IsCompleted = false,
-                            Title = "Mow the lawn"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Collect all trash and recycling and take to curb",
-                            DueDate = new DateTime(2026, 2, 14, 11, 59, 37, 208, DateTimeKind.Local).AddTicks(6297),
-                            FamilyMemberId = 3,
-                            IsCompleted = false,
-                            Title = "Take out the trash"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Description = "Clean the exterior and interior of the car",
-                            DueDate = new DateTime(2026, 2, 18, 11, 59, 37, 208, DateTimeKind.Local).AddTicks(6314),
-                            FamilyMemberId = 1,
-                            IsCompleted = false,
-                            Title = "Wash the car"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Description = "Sort and declutter items in the garage",
-                            DueDate = new DateTime(2026, 2, 20, 11, 59, 37, 208, DateTimeKind.Local).AddTicks(6331),
-                            FamilyMemberId = 2,
-                            IsCompleted = false,
-                            Title = "Organize the garage"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Description = "Buy groceries for the week",
-                            DueDate = new DateTime(2026, 2, 14, 11, 59, 37, 208, DateTimeKind.Local).AddTicks(6357),
-                            FamilyMemberId = 3,
-                            IsCompleted = false,
-                            Title = "Grocery shopping"
-                        });
                 });
 
             modelBuilder.Entity("FamilyFlow.Data.Models.ScheduleEvent", b =>
@@ -197,42 +117,6 @@ namespace FamilyFlow.Data.Migrations
                     b.HasIndex("FamilyMemberId");
 
                     b.ToTable("ScheduleEvents");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            EndTime = new DateTime(2026, 2, 15, 19, 0, 0, 0, DateTimeKind.Unspecified),
-                            FamilyMemberId = 1,
-                            StartTime = new DateTime(2026, 2, 15, 18, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Family Meeting"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            EndTime = new DateTime(2026, 2, 14, 11, 0, 0, 0, DateTimeKind.Unspecified),
-                            FamilyMemberId = 2,
-                            StartTime = new DateTime(2026, 2, 14, 10, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Grocery Shopping"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AccompanyingAdultId = 1,
-                            EndTime = new DateTime(2026, 7, 3, 15, 0, 0, 0, DateTimeKind.Unspecified),
-                            FamilyMemberId = 3,
-                            StartTime = new DateTime(2026, 7, 3, 14, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Doctor Appointment"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AccompanyingAdultId = 2,
-                            EndTime = new DateTime(2026, 7, 4, 18, 0, 0, 0, DateTimeKind.Unspecified),
-                            FamilyMemberId = 4,
-                            StartTime = new DateTime(2026, 7, 4, 16, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Birthday Party"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -435,6 +319,17 @@ namespace FamilyFlow.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("FamilyFlow.Data.Models.FamilyMember", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FamilyFlow.Data.Models.HouseTask", b =>
