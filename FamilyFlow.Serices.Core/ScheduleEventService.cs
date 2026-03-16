@@ -63,7 +63,7 @@ namespace FamilyFlow.Services.Core
                     FamilyMemberId = se.FamilyMemberId,
                     AccompanyingAdultId = se.AccompanyingAdultId
                 })
-                .SingleOrDefaultAsync();
+                .FirstOrDefaultAsync();
 
             if (selectedEvent == null)
             {
@@ -77,7 +77,7 @@ namespace FamilyFlow.Services.Core
         {
             ScheduleEvent? selectedEvent = await dbContext
                 .ScheduleEvents
-                .SingleOrDefaultAsync(se => se.Id == id);
+                .FirstOrDefaultAsync(se => se.Id == id);
 
             if (selectedEvent == null)
             {
@@ -106,7 +106,7 @@ namespace FamilyFlow.Services.Core
                 EndTime = se.EndTime.ToString(),
                 FamilyMemberId = se.FamilyMemberId
             })
-            .SingleOrDefaultAsync();
+            .FirstOrDefaultAsync();
 
             if (selectedEvent == null)
             {
@@ -121,7 +121,7 @@ namespace FamilyFlow.Services.Core
         {
             ScheduleEvent? selectedEvent = await dbContext
                 .ScheduleEvents
-                .SingleOrDefaultAsync(se => se.Id == id);
+                .FirstOrDefaultAsync(se => se.Id == id);
 
             if (selectedEvent == null)
             {

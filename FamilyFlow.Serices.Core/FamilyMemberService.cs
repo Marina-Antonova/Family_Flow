@@ -107,7 +107,7 @@ namespace FamilyFlow.Services.Core
                 Role = fm.Role,
                 Age = fm.Age
             })
-            .SingleOrDefaultAsync();
+            .FirstOrDefaultAsync();
 
             if (selectedMember == null)
             {
@@ -121,8 +121,7 @@ namespace FamilyFlow.Services.Core
         {
             FamilyMember? selectedMember = await dbContext
                 .FamilyMembers
-                //.AsNoTracking()
-                .SingleOrDefaultAsync(fm => fm.Id == id);
+                .FirstOrDefaultAsync(fm => fm.Id == id);
 
             if (selectedMember == null)
             {
@@ -148,7 +147,7 @@ namespace FamilyFlow.Services.Core
                 Id = fm.Id,
                 Name = fm.Name
             })
-            .SingleOrDefaultAsync();
+            .FirstOrDefaultAsync();
 
             if (selectedMember == null)
             {
@@ -164,7 +163,7 @@ namespace FamilyFlow.Services.Core
           .FamilyMembers
           .AsNoTracking()
           .Where(fm => fm.Id == id)
-          .SingleOrDefaultAsync();
+          .FirstOrDefaultAsync();
 
             if (selectedMember == null)
             {

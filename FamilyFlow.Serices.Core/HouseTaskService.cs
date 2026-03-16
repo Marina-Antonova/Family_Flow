@@ -66,7 +66,7 @@ namespace FamilyFlow.Services.Core
                     DueDate = ht.DueDate,
                     FamilyMemberId = ht.FamilyMemberId
                 })
-                .SingleOrDefaultAsync();
+                .FirstOrDefaultAsync();
            
             if (selectedTask == null)
             {
@@ -80,7 +80,7 @@ namespace FamilyFlow.Services.Core
         {
             HouseTask? selectedTask = await dbContext
                 .HouseTasks
-                .SingleOrDefaultAsync(ht => ht.Id == id);
+                .FirstOrDefaultAsync(ht => ht.Id == id);
 
             if (selectedTask == null)
             {
@@ -107,7 +107,7 @@ namespace FamilyFlow.Services.Core
                 DueDate = fm.DueDate.ToString("yyyy-MM-dd"),
                 FamilyMemberId = fm.FamilyMemberId
             })
-            .SingleOrDefaultAsync();
+            .FirstOrDefaultAsync();
 
             if (selectedTask == null)
             {
@@ -121,7 +121,7 @@ namespace FamilyFlow.Services.Core
         {
             HouseTask? selectedTask = await dbContext
                 .HouseTasks
-                .SingleOrDefaultAsync(ht => ht.Id == id);
+                .FirstOrDefaultAsync(ht => ht.Id == id);
 
             if (selectedTask == null)
             {

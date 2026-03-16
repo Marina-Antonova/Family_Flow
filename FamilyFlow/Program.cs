@@ -21,9 +21,11 @@ namespace FamilyFlow
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+            builder.Services
+                .AddDefaultIdentity<IdentityUser>(options =>
             {
                 ConfigureIdentity(options, builder.Configuration);
+
             })
                 .AddEntityFrameworkStores<FamilyFlowDbContext>();
             builder.Services.AddControllersWithViews();
@@ -90,7 +92,7 @@ namespace FamilyFlow
                 .GetValue<bool>("IdentityOptions:Password:RequireNonAlphanumeric");
              options .Password.RequiredLength = configuration
                 .GetValue<int>("IdentityOptions:Password:RequiredLength");
-                options.Password.RequiredUniqueChars = configuration
+            options.Password.RequiredUniqueChars = configuration
                 .GetValue<int>("IdentityOptions:Password:RequiredUniqueChars");
         }
     }
