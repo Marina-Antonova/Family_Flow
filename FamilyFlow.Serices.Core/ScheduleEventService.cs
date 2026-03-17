@@ -1,7 +1,7 @@
 ﻿using FamilyFlow.Data;
 using FamilyFlow.Data.Models;
 using FamilyFlow.Services.Core.Interfaces;
-using FamilyFlow.ViewModels.ScheduleEvent;
+using FamilyFlow.Web.ViewModels.ScheduleEvent;
 using Microsoft.EntityFrameworkCore;
 
 namespace FamilyFlow.Services.Core

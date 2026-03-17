@@ -1,0 +1,51 @@
+﻿@model FamilyViewModel
+
+@{
+    ViewData["Title"] = "Create Family";
+}
+
+<h1 class="mb-2">Create Family</h1>
+<p class="text-muted mb-4">
+    Use the form below to create a new family.
+</p>
+
+<div class="row justify-content">
+    <div class="col-12 col-lg-9 col-xl-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-bottom">
+                <strong>Family details</strong>
+            </div>
+
+            <div class="card-body">
+                <form asp-action="Create" method="post" novalidate>
+                    <div asp-validation-summary="ModelOnly"
+                         class="alert alert-danger"
+                         role="alert"></div>
+
+                    <div class="mb-4">
+                        <label asp-for="Name" class="form-label"></label>
+                        <input asp-for="Name" class="form-control form-control-lg" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <input asp-for="UserId" type="hidden" />
+
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a asp-controller="Family"
+                           asp-action="Index"
+                           class="btn btn-light">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            Save Family
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

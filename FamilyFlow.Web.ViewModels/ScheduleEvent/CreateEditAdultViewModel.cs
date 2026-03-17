@@ -1,4 +1,4 @@
-﻿namespace FamilyFlow.ViewModels.ScheduleEvent
+﻿namespace FamilyFlow.Web.ViewModels.ScheduleEvent
 {
     public class CreateEditAdultViewModel
     {

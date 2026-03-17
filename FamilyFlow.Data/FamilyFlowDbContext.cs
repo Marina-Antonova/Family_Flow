@@ -14,6 +14,7 @@ namespace FamilyFlow.Data
         public virtual DbSet<FamilyMember> FamilyMembers { get; set; } = null!;
         public virtual DbSet<HouseTask> HouseTasks { get; set; } = null!;
         public virtual DbSet<ScheduleEvent> ScheduleEvents { get; set; } = null!;
+        public virtual DbSet<Family> Families { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

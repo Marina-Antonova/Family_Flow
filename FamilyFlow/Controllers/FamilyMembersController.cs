@@ -1,5 +1,5 @@
 ﻿using FamilyFlow.Services.Core.Interfaces;
-using FamilyFlow.ViewModels.FamilyMember;
+using FamilyFlow.Web.ViewModels.FamilyMember;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -33,12 +33,14 @@ namespace FamilyFlow.Controllers
         [Authorize]
         public async Task<IActionResult> Details(int id)
         {
+            string userId = userManager.GetUserId(User);
+
             if (id <= 0)
             {
                 return BadRequest();
             }
 
-            DetailsFamilyMemberViewModel? selectedMember = await familyMemberService.GetDetailsForFamilyMemberAsync(id);
+            DetailsFamilyMemberViewModel? selectedMember = await familyMemberService.GetDetailsForFamilyMemberAsync(id, userId);
 
             if (selectedMember == null)
             {
@@ -59,6 +61,8 @@ namespace FamilyFlow.Controllers
         [Authorize]
         public async Task<IActionResult> Create(CreateFamilyMemberViewModel inputModel)
         {
+            string userId = userManager.GetUserId(User);
+
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError(string.Empty, "Model Validation failed.");
@@ -66,7 +70,7 @@ namespace FamilyFlow.Controllers
             }
             try
             {
-                await familyMemberService.CreateFamilyMemberAsync(inputModel);
+                await familyMemberService.CreateFamilyMemberAsync(inputModel, userId);
                 return RedirectToAction("All");
             }
             catch (Exception e)

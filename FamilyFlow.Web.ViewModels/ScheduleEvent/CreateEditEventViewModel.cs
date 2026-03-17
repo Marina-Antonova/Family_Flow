@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using static FamilyFlow.GCommon.ValidationConstants.ScheduleEvent;
 
-namespace FamilyFlow.ViewModels.ScheduleEvent
+namespace FamilyFlow.Web.ViewModels.ScheduleEvent
 {
     public class CreateEditEventViewModel
     {

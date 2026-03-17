@@ -1,14 +1,14 @@
-﻿using FamilyFlow.ViewModels.FamilyMember;
+﻿using FamilyFlow.Web.ViewModels.FamilyMember;
 
 namespace FamilyFlow.Services.Core.Interfaces
 {
     public interface IFamilyMemberService
     {
-        Task<IEnumerable<AllFamilyMembersViewModel>> GetAllFamilyMembersAsync();
+        Task<IEnumerable<AllFamilyMembersViewModel>> GetAllFamilyMembersAsync(string userId);
 
-        Task<DetailsFamilyMemberViewModel?> GetDetailsForFamilyMemberAsync(int id);
+        Task<DetailsFamilyMemberViewModel?> GetDetailsForFamilyMemberAsync(int id, string userId);
 
-        Task CreateFamilyMemberAsync(CreateFamilyMemberViewModel inputModel);
+        Task CreateFamilyMemberAsync(CreateFamilyMemberViewModel inputModel, string userId);
 
         Task<CreateFamilyMemberViewModel?> GetForEditFamilyMemberAsync(int id);
 

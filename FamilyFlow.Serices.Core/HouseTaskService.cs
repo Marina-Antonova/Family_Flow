@@ -2,9 +2,9 @@
 using FamilyFlow.Data.Models;
 using FamilyFlow.GCommon.Enums;
 using FamilyFlow.Services.Core.Interfaces;
-using FamilyFlow.ViewModels.FamilyMember;
-using FamilyFlow.ViewModels.HouseTasks;
-using FamilyFlow.ViewModels.ScheduleEvent;
+using FamilyFlow.Web.ViewModels.FamilyMember;
+using FamilyFlow.Web.ViewModels.HouseTasks;
+using FamilyFlow.Web.ViewModels.ScheduleEvent;
 using Microsoft.EntityFrameworkCore;
 
 

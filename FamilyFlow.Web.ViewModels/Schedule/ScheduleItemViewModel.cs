@@ -1,4 +1,4 @@
-﻿namespace FamilyFlow.ViewModels.Schedule
+﻿namespace FamilyFlow.Web.ViewModels.Schedule
 {
     public class ScheduleItemViewModel
     {

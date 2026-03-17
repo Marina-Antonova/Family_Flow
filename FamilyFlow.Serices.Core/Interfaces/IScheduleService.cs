@@ -1,4 +1,4 @@
-﻿using FamilyFlow.ViewModels.Schedule;
+﻿using FamilyFlow.Web.ViewModels.Schedule;
 
 namespace FamilyFlow.Services.Interfaces
 {

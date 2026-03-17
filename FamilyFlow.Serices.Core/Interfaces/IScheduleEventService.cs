@@ -1,4 +1,4 @@
-﻿using FamilyFlow.ViewModels.ScheduleEvent;
+﻿using FamilyFlow.Web.ViewModels.ScheduleEvent;
 using FamilyFlow.Data.Models;
 
 namespace FamilyFlow.Services.Core.Interfaces

@@ -1,5 +1,5 @@
 ﻿using FamilyFlow.Services.Core.Interfaces;
-using FamilyFlow.ViewModels.ScheduleEvent;
+using FamilyFlow.Web.ViewModels.ScheduleEvent;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

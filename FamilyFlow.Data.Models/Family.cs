@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
 using static FamilyFlow.GCommon.ValidationConstants.Family;
 
@@ -15,6 +16,11 @@ namespace FamilyFlow.Data.Models
 
         public virtual ICollection<FamilyMember> Members { get; set; } 
             = new List<FamilyMember>();
+
+        [Required]
+        public string UserId { get; set; } = null!;
+
+        public IdentityUser User { get; set; } = null!;
 
     }
 }

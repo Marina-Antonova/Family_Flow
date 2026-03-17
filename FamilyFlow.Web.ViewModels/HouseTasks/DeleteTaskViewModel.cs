@@ -1,4 +1,4 @@
-﻿namespace FamilyFlow.ViewModels.HouseTasks
+﻿namespace FamilyFlow.Web.ViewModels.HouseTasks
 {
     public class DeleteTaskViewModel
     {

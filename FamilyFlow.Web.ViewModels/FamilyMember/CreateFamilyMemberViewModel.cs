@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using static FamilyFlow.GCommon.ValidationConstants.FamilyMember;
 
-namespace FamilyFlow.ViewModels.FamilyMember
+namespace FamilyFlow.Web.ViewModels.FamilyMember
 {
     public class CreateFamilyMemberViewModel
     {

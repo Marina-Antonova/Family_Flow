@@ -1,6 +1,6 @@
 ﻿using FamilyFlow.Data;
 using FamilyFlow.Services.Core.Interfaces;
-using FamilyFlow.ViewModels.HouseTasks;
+using FamilyFlow.Web.ViewModels.HouseTasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

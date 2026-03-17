@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using FamilyFlow.Data.Models;
+﻿using FamilyFlow.Data.Models;
 using FamilyFlow.GCommon.Enums;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Reflection.Emit;
 
 namespace FamilyFlow.Data.Configurations
 {
@@ -17,6 +18,12 @@ namespace FamilyFlow.Data.Configurations
         public void Configure(EntityTypeBuilder<FamilyMember> entity)
         {
             //entity.HasData(Members);
+
+            entity
+              .HasOne(fm => fm.Family)
+              .WithMany(f => f.Members)
+              .HasForeignKey(fm => fm.FamilyId)
+              .OnDelete(DeleteBehavior.Restrict);
         } 
     }
 }

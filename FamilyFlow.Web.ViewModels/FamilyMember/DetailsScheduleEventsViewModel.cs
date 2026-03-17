@@ -1,4 +1,4 @@
-﻿namespace FamilyFlow.ViewModels.FamilyMember
+﻿namespace FamilyFlow.Web.ViewModels.FamilyMember
 {
     public class DetailsScheduleEventsViewModel
     {

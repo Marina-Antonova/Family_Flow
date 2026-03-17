@@ -1,7 +1,7 @@
 ﻿using FamilyFlow.Data;
 using FamilyFlow.Data.Models;
 using FamilyFlow.Services.Core.Interfaces;
-using FamilyFlow.ViewModels.FamilyMember;
+using FamilyFlow.Web.ViewModels.FamilyMember;
 using FamilyFlow.GCommon;
 using FamilyFlow.GCommon.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -18,10 +18,11 @@ namespace FamilyFlow.Services.Core
             this.dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<AllFamilyMembersViewModel>> GetAllFamilyMembersAsync()
+        public async Task<IEnumerable<AllFamilyMembersViewModel>> GetAllFamilyMembersAsync(string userId)
         {
             IEnumerable<AllFamilyMembersViewModel> members = await dbContext
               .FamilyMembers
+              .Where(fm => fm.UserId == userId)
               .AsNoTracking()
               .Include(fm => fm.HouseTasks)
               .Include(fm => fm.ScheduleEvents)
@@ -41,10 +42,11 @@ namespace FamilyFlow.Services.Core
             return members;
         }
 
-        public async Task<DetailsFamilyMemberViewModel?> GetDetailsForFamilyMemberAsync(int id)
+        public async Task<DetailsFamilyMemberViewModel?> GetDetailsForFamilyMemberAsync(int id, string userId)
         {
             FamilyMember? selectedMember = await dbContext
             .FamilyMembers
+            .Where(fm => fm.UserId == userId)
             .AsNoTracking()
             .Include(fm => fm.HouseTasks)
             .Include(fm => fm.ScheduleEvents)
@@ -82,7 +84,7 @@ namespace FamilyFlow.Services.Core
 
         }
 
-        public async Task CreateFamilyMemberAsync(CreateFamilyMemberViewModel inputModel)
+        public async Task CreateFamilyMemberAsync(CreateFamilyMemberViewModel inputModel, string userId)
         {
             FamilyMember newMember = new FamilyMember
             {
@@ -90,6 +92,8 @@ namespace FamilyFlow.Services.Core
                 Role = (FamilyRole)inputModel.Role,
                 Age = inputModel.Age
             };
+            newMember.UserId = userId;
+
             await dbContext.FamilyMembers.AddAsync(newMember);
             await dbContext.SaveChangesAsync();
         }

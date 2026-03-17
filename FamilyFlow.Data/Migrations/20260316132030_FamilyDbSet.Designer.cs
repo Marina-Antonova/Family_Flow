@@ -4,6 +4,7 @@ using FamilyFlow.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FamilyFlow.Data.Migrations
 {
     [DbContext(typeof(FamilyFlowDbContext))]
-    partial class FamilyFlowDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260316132030_FamilyDbSet")]
+    partial class FamilyDbSet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,7 +60,7 @@ namespace FamilyFlow.Data.Migrations
                     b.Property<int>("Age")
                         .HasColumnType("int");
 
-                    b.Property<int>("FamilyId")
+                    b.Property<int?>("FamilyId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -366,8 +369,7 @@ namespace FamilyFlow.Data.Migrations
                     b.HasOne("FamilyFlow.Data.Models.Family", "Family")
                         .WithMany("Members")
                         .HasForeignKey("FamilyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()

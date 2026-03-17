@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using static FamilyFlow.GCommon.ValidationConstants.HouseTask;
 
-namespace FamilyFlow.ViewModels.HouseTasks
+namespace FamilyFlow.Web.ViewModels.HouseTasks
 {
     public class CreateEditTaskViewModel
     {

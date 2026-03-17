@@ -1,6 +1,6 @@
 ﻿using FamilyFlow.Data;
 using FamilyFlow.Services.Interfaces;
-using FamilyFlow.ViewModels.Schedule;
+using FamilyFlow.Web.ViewModels.Schedule;
 using Microsoft.EntityFrameworkCore;
 
 namespace FamilyFlow.Services

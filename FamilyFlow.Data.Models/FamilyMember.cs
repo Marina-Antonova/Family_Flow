@@ -31,5 +31,8 @@ namespace FamilyFlow.Data.Models
 
         public IdentityUser User { get; set; } = null!;
 
+        [Required]
+        public int FamilyId { get; set; }
+        public virtual Family Family { get; set; }
     }
 }

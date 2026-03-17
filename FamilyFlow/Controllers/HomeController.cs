@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using FamilyFlow.ViewModels;
+using FamilyFlow.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyFlow.Controllers

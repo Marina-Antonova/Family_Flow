@@ -1,5 +1,4 @@
-﻿using FamilyFlow.ViewModels.FamilyMember;
-using FamilyFlow.ViewModels.HouseTasks;
+﻿using FamilyFlow.Web.ViewModels.HouseTasks;
 
 namespace FamilyFlow.Services.Core.Interfaces
 {
