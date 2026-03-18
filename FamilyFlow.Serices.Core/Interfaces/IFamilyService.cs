@@ -12,5 +12,6 @@ namespace FamilyFlow.Services.Core.Interfaces
         Task EditFamilyAsync(int id, FamilyViewModel inputModel);
 
         Task DeleteFamilyAsync(int id, FamilyViewModel? viewModel);
+        Task<int> GetFamilyIdForUserAsync(string? userId);
     }
 }

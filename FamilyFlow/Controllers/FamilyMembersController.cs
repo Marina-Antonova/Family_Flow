@@ -3,6 +3,7 @@ using FamilyFlow.Web.ViewModels.FamilyMember;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 
 namespace FamilyFlow.Controllers
@@ -10,12 +11,14 @@ namespace FamilyFlow.Controllers
     public class FamilyMembersController : Controller
     {
         private readonly IFamilyMemberService familyMemberService;
+        private readonly IFamilyService familyService;
         private readonly UserManager<IdentityUser> userManager;
 
-        public FamilyMembersController(IFamilyMemberService familyMemberService, UserManager<IdentityUser> userManager)
+        public FamilyMembersController(IFamilyService familyService, IFamilyMemberService familyMemberService, UserManager<IdentityUser> userManager)
         {
             this.familyMemberService = familyMemberService;
             this.userManager = userManager;
+            this.familyService = familyService;
         }
 
         [HttpGet]
@@ -24,8 +27,19 @@ namespace FamilyFlow.Controllers
         {
             string userId = userManager.GetUserId(User);
 
-            IEnumerable<AllFamilyMembersViewModel> members = await familyMemberService
-            .GetAllFamilyMembersAsync(userId);
+            if(string.IsNullOrEmpty(userId))
+            { 
+                return RedirectToAction("Login", "Account");
+            }
+
+            var family = await familyService.GetFamilyForUserAsync(userId);
+
+            if (family == null)
+            {
+                return RedirectToAction("MyFamily", "Family");
+            }
+
+            IEnumerable<AllFamilyMembersViewModel> members = await familyMemberService.GetAllFamilyMembersAsync(userId);
             return View(members);
         }
 
@@ -34,6 +48,11 @@ namespace FamilyFlow.Controllers
         public async Task<IActionResult> Details(int id)
         {
             string userId = userManager.GetUserId(User);
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
             if (id <= 0)
             {
@@ -52,9 +71,29 @@ namespace FamilyFlow.Controllers
 
         [HttpGet]
         [Authorize]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View(new CreateFamilyMemberViewModel());
+            string userId = userManager.GetUserId(User);
+            int familyId = await familyService.GetFamilyIdForUserAsync(userId);
+
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            if (familyId == null || familyId <= 0)
+            {
+                return RedirectToAction("MyFamily", "Family");
+            }
+
+            var model = new CreateFamilyMemberViewModel()
+            {
+                UserId = userId,
+                FamilyId = familyId
+            };
+
+            return View(model);
         }
 
         [HttpPost]
@@ -62,6 +101,7 @@ namespace FamilyFlow.Controllers
         public async Task<IActionResult> Create(CreateFamilyMemberViewModel inputModel)
         {
             string userId = userManager.GetUserId(User);
+            int familyId = await familyService.GetFamilyIdForUserAsync(userId);
 
             if (!ModelState.IsValid)
             {
@@ -70,7 +110,7 @@ namespace FamilyFlow.Controllers
             }
             try
             {
-                await familyMemberService.CreateFamilyMemberAsync(inputModel, userId);
+                await familyMemberService.CreateFamilyMemberAsync(inputModel, userId, familyId);
                 return RedirectToAction("All");
             }
             catch (Exception e)

@@ -26,17 +26,17 @@ namespace FamilyFlow.Services.Core
               .AsNoTracking()
               .Include(fm => fm.HouseTasks)
               .Include(fm => fm.ScheduleEvents)
-              .Select(static fm => new AllFamilyMembersViewModel()
+              .Select(static f => new AllFamilyMembersViewModel()
               {
-                  Id = fm.Id,
-                  Name = fm.Name,
-                  Role = fm.Role.ToString(),
-                  RoleImagePath = fm.Role.GetImagePath(),
-                  Age = fm.Age,
-                  HouseTasksCount = fm.HouseTasks.Count,
-                  ScheduleEventsCount = fm.ScheduleEvents.Count
+                  Id = f.Id,
+                  Name = f.Name,
+                  Role = f.Role.ToString(),
+                  RoleImagePath = f.Role.GetImagePath(),
+                  Age = f.Age,
+                  HouseTasksCount = f.HouseTasks.Count,
+                  ScheduleEventsCount = f.ScheduleEvents.Count,
               })
-              .OrderBy(fm => fm.Name)
+              .OrderBy(f => f.Id)
               .ToArrayAsync();
 
             return members;
@@ -84,15 +84,16 @@ namespace FamilyFlow.Services.Core
 
         }
 
-        public async Task CreateFamilyMemberAsync(CreateFamilyMemberViewModel inputModel, string userId)
+        public async Task CreateFamilyMemberAsync(CreateFamilyMemberViewModel inputModel, string userId, int familyId)
         {
             FamilyMember newMember = new FamilyMember
             {
                 Name = inputModel.Name,
                 Role = (FamilyRole)inputModel.Role,
-                Age = inputModel.Age
+                Age = inputModel.Age,
+                UserId = userId,
+                FamilyId = familyId
             };
-            newMember.UserId = userId;
 
             await dbContext.FamilyMembers.AddAsync(newMember);
             await dbContext.SaveChangesAsync();

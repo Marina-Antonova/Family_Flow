@@ -8,7 +8,7 @@ namespace FamilyFlow.Services.Core.Interfaces
 
         Task<DetailsFamilyMemberViewModel?> GetDetailsForFamilyMemberAsync(int id, string userId);
 
-        Task CreateFamilyMemberAsync(CreateFamilyMemberViewModel inputModel, string userId);
+        Task CreateFamilyMemberAsync(CreateFamilyMemberViewModel inputModel, string userId, int familyId);
 
         Task<CreateFamilyMemberViewModel?> GetForEditFamilyMemberAsync(int id);
 

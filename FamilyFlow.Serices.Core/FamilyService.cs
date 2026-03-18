@@ -94,5 +94,14 @@ namespace FamilyFlow.Services.Core
             dbContext.Families.Remove(family);
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task<int> GetFamilyIdForUserAsync(string? userId)
+        {
+            return await dbContext
+                .Families
+                .Where(f => f.UserId == userId)
+                .Select(f => f.Id)
+                .FirstOrDefaultAsync();
+        }
     }
 }
