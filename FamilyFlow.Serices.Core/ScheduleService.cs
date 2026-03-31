@@ -17,9 +17,9 @@ namespace FamilyFlow.Services
         public async Task<List<ScheduleItemViewModel>> GetFullScheduleAsync()
         {
             var eventItems = await dbContext.ScheduleEvents
-                .Select(e => new ScheduleItemViewModel
+                .SelectMany(e => e.Participants, (e,p) => new ScheduleItemViewModel
                 {
-                    FamilyMemberName = e.FamilyMemberScheduleEvents.Name,
+                    FamilyMemberName = p.FamilyMember.Name,
                     Title = e.Title,
                     Type = "Event",
                     StartTime = e.StartTime,

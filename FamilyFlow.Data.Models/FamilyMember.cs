@@ -21,10 +21,10 @@ namespace FamilyFlow.Data.Models
 
         public virtual ICollection<HouseTask> HouseTasks { get; set; }
                 = new List<HouseTask>();
-        public virtual ICollection<ScheduleEvent> ScheduleEvents { get; set; }
-                = new List<ScheduleEvent>();
         public virtual ICollection<ScheduleEvent> AccompanyEvents { get; set; } 
                 = new List<ScheduleEvent>();
+        public virtual ICollection<ScheduleEventParticipant> EventParticipations { get; set; }
+               = new List<ScheduleEventParticipant>();
 
         [Required]
         public string UserId { get; set; } = null!;

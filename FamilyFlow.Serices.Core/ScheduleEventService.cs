@@ -16,36 +16,45 @@ namespace FamilyFlow.Services.Core
         }
 
         public async Task<CreateEditEventViewModel?> GetForCreateScheduleEventViewModelAsync(int familyMemberId)
+        { 
+              return new CreateEditEventViewModel();
+        }
+
+        public async Task CreateScheduleEventAsync(CreateEditEventViewModel inputModel, int familyMemberId)
         {
-            FamilyMember? selectedMember = await dbContext
-               .FamilyMembers
-               .AsNoTracking()
-               .FirstOrDefaultAsync(f => f.Id == familyMemberId);
+            FamilyMember? selectedMember = await FindSelectedFamilyMemberAsync(familyMemberId);
 
             if (selectedMember == null)
             {
-                return null;
+                throw new Exception("Family member not found");
             }
 
-            return new CreateEditEventViewModel
-            {
-                FamilyMemberId = familyMemberId
-            };
-        }
-
-        public async Task CreateScheduleEventAsync(CreateEditEventViewModel inputModel)
-        {
             ScheduleEvent newEvent = new ScheduleEvent()
             {
                 Title = inputModel.Title,
                 StartTime = inputModel.StartTime,
                 EndTime = inputModel.EndTime,
-                FamilyMemberId = inputModel.FamilyMemberId,
-                AccompanyingAdultId = inputModel.AccompanyingAdultId
-            };
+                AccompanyingAdultId = inputModel.AccompanyingAdultId,
+                CreatorId = selectedMember.Id,
+                Participants = inputModel.SelectedMemberIds?
+                    .Select(memberId => new ScheduleEventParticipant
+                    {
+                        FamilyMemberId = memberId
+                    })
+                    .ToList() ?? new List<ScheduleEventParticipant>()
+                .ToList()
+                };
 
             await dbContext.ScheduleEvents.AddAsync(newEvent);
-            await dbContext.SaveChangesAsync();
+            try
+            {
+                await dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+            }
+            
         }
 
         public async Task<CreateEditEventViewModel?> GetForEditScheduleEventViewModelAsync(int id)
@@ -60,8 +69,11 @@ namespace FamilyFlow.Services.Core
                     Title = se.Title,
                     StartTime = se.StartTime,
                     EndTime = se.EndTime,
-                    FamilyMemberId = se.FamilyMemberId,
-                    AccompanyingAdultId = se.AccompanyingAdultId
+                    CreatorId = se.CreatorId,
+                    AccompanyingAdultId = se.AccompanyingAdultId,
+                    SelectedMemberIds = se.Participants
+                        .Select(p => p.FamilyMemberId)
+                        .ToList()
                 })
                 .FirstOrDefaultAsync();
 
@@ -75,7 +87,7 @@ namespace FamilyFlow.Services.Core
 
         public async Task EditScheduleEventAsync(int id, CreateEditEventViewModel inputModel)
         {
-            ScheduleEvent? selectedEvent = await dbContext
+            Data.Models.ScheduleEvent? selectedEvent = await dbContext
                 .ScheduleEvents
                 .FirstOrDefaultAsync(se => se.Id == id);
 
@@ -104,9 +116,11 @@ namespace FamilyFlow.Services.Core
                 Title = se.Title,
                 StartTime = se.StartTime.ToString(),
                 EndTime = se.EndTime.ToString(),
-                FamilyMemberId = se.FamilyMemberId
+                CreatorId = se.CreatorId
+
             })
             .FirstOrDefaultAsync();
+
 
             if (selectedEvent == null)
             {
@@ -119,7 +133,7 @@ namespace FamilyFlow.Services.Core
 
         public async Task DeleteScheduleEventAsync(int id, DeleteEventViewModel viewModel)
         {
-            ScheduleEvent? selectedEvent = await dbContext
+            Data.Models.ScheduleEvent? selectedEvent = await dbContext
                 .ScheduleEvents
                 .FirstOrDefaultAsync(se => se.Id == id);
 
@@ -132,12 +146,12 @@ namespace FamilyFlow.Services.Core
             await dbContext.SaveChangesAsync();
         }
 
-        public IEnumerable<CreateEditAdultViewModel> GetAllAdults()
+        public IEnumerable<CreateEditAdultViewModel> GetAllAdults(string userId)
         {
             return dbContext
              .FamilyMembers
              .AsNoTracking()
-             .Where(a => a.Age >= 18)
+             .Where(a => a.Age >= 18 && a.UserId == userId)
              .OrderBy(a => a.Name)
              .Select(a => new CreateEditAdultViewModel()
              {
@@ -147,7 +161,22 @@ namespace FamilyFlow.Services.Core
              .ToArray();
         }
 
-        public async Task<FamilyMember?> FindSelectedFamilyMemberAsync(int familyMemberId)
+        public IEnumerable<CreateEditAdultViewModel> GetAllMembers(string userId)
+        {
+            return dbContext
+             .FamilyMembers
+             .AsNoTracking()
+             .Where(m => m.UserId == userId)
+             .OrderBy(a => a.Name)
+             .Select(a => new CreateEditAdultViewModel()
+             {
+                 Id = a.Id,
+                 Name = a.Name
+             })
+             .ToArray();
+        }
+
+        public async Task<Data.Models.FamilyMember?> FindSelectedFamilyMemberAsync(int familyMemberId)
         {
             return await dbContext
                 .FamilyMembers

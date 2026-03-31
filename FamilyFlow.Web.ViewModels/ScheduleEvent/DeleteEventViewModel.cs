@@ -6,6 +6,6 @@
         public string Title { get; set; } = null!;
         public string StartTime { get; set; } = null!;
         public string EndTime { get; set; } = null!;
-        public int FamilyMemberId { get; set; }
+        public int CreatorId { get; set; }
     }
 }

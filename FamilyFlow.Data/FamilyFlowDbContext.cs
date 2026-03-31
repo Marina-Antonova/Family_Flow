@@ -15,6 +15,7 @@ namespace FamilyFlow.Data
         public virtual DbSet<HouseTask> HouseTasks { get; set; } = null!;
         public virtual DbSet<ScheduleEvent> ScheduleEvents { get; set; } = null!;
         public virtual DbSet<Family> Families { get; set; } = null!;
+        public virtual DbSet<ScheduleEventParticipant> ScheduleEventParticipants { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,6 +25,18 @@ namespace FamilyFlow.Data
             modelBuilder.ApplyConfiguration(new HouseTaskConfiguration());
             modelBuilder.ApplyConfiguration(new ScheduleEventConfiguration());
 
+            modelBuilder.Entity<ScheduleEventParticipant>()
+                .HasKey(sep => new { sep.ScheduleEventId, sep.FamilyMemberId });
+
+            modelBuilder.Entity<ScheduleEventParticipant>()
+                .HasOne(sep => sep.ScheduleEvent)
+                .WithMany(e => e.Participants)
+                .HasForeignKey(sep => sep.ScheduleEventId);
+
+            modelBuilder.Entity<ScheduleEventParticipant>()
+                .HasOne(sep => sep.FamilyMember)
+                .WithMany(fm => fm.EventParticipations)
+                .HasForeignKey(sep => sep.FamilyMemberId);
         }
     }
 }

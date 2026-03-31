@@ -18,15 +18,14 @@ namespace FamilyFlow.Data.Models
         [Required]
         public DateTime EndTime { get; set; }
 
-        
-        public int FamilyMemberId { get; set; }
-
-        public virtual FamilyMember FamilyMemberScheduleEvents { get; set; } = null!;
-
-
         public int? AccompanyingAdultId { get; set; }
 
         public virtual FamilyMember? AccompanyingAdult { get; set; }
+
+        public ICollection<ScheduleEventParticipant>? Participants { get; set; }
+            = new List<ScheduleEventParticipant>();
+
+        public int CreatorId { get; set; }
     }
 }
 

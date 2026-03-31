@@ -1,17 +1,19 @@
 ﻿using FamilyFlow.Services.Core.Interfaces;
 using FamilyFlow.Web.ViewModels.ScheduleEvent;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
 
 namespace FamilyFlow.Controllers
 {
     public class ScheduleEventController : Controller
     {
         private readonly IScheduleEventService scheduleEventService;
-        public ScheduleEventController(IScheduleEventService scheduleEventService)
+        private readonly UserManager<IdentityUser> userManager;
+        public ScheduleEventController(IScheduleEventService scheduleEventService, UserManager<IdentityUser> userManager)
         {
             this.scheduleEventService = scheduleEventService;
+            this.userManager = userManager;
         }
 
         [HttpGet]
@@ -29,6 +31,14 @@ namespace FamilyFlow.Controllers
                 return NotFound();
             }
 
+            string userId = userManager.GetUserId(User);
+            inputModel.Adults = scheduleEventService.GetAllAdults(userId).ToList();
+
+            inputModel.Members = scheduleEventService
+                .GetAllMembers(userId)
+                .Where(m => m.Id != inputModel.AccompanyingAdultId)
+                .ToList();
+
             return View(inputModel);
         }
 
@@ -36,7 +46,10 @@ namespace FamilyFlow.Controllers
         [Authorize]
         public async Task<IActionResult> Create(int id, CreateEditEventViewModel inputModel)
         {
-            inputModel.Adults = scheduleEventService.GetAllAdults().ToList();
+            string userId = userManager.GetUserId(User);
+
+            inputModel.Adults = scheduleEventService.GetAllAdults(userId).ToList();
+            inputModel.Members = scheduleEventService.GetAllMembers(userId).ToList();
 
             if (id <= 0)
             {
@@ -49,7 +62,7 @@ namespace FamilyFlow.Controllers
                 return View(inputModel);
             }
 
-            var selectedMember = await scheduleEventService.FindSelectedFamilyMemberAsync(inputModel.FamilyMemberId);
+            var selectedMember = await scheduleEventService.FindSelectedFamilyMemberAsync(id);
 
             if (selectedMember == null)
             {
@@ -71,8 +84,8 @@ namespace FamilyFlow.Controllers
 
             try
             {
-                await scheduleEventService.CreateScheduleEventAsync(inputModel);
-                return RedirectToAction("Details", "FamilyMembers", new { id = inputModel.FamilyMemberId });
+                await scheduleEventService.CreateScheduleEventAsync(inputModel, id);
+                return RedirectToAction("Details", "FamilyMembers", new { id });
             }
             catch (Exception e)
             {
@@ -92,7 +105,9 @@ namespace FamilyFlow.Controllers
                 }
 
             var selectedEvent = await scheduleEventService.GetForEditScheduleEventViewModelAsync(id);
-            selectedEvent.Adults = scheduleEventService.GetAllAdults().ToList();
+            
+            string userId = userManager.GetUserId(User);
+            selectedEvent.Adults = scheduleEventService.GetAllAdults(userId).ToList();
 
             if (selectedEvent == null)
                 {
@@ -106,7 +121,9 @@ namespace FamilyFlow.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(int id, CreateEditEventViewModel inputModel)
             {
-                inputModel.Adults = scheduleEventService.GetAllAdults().ToList();
+                string userId = userManager.GetUserId(User);
+
+                inputModel.Adults = scheduleEventService.GetAllAdults(userId).ToList();
 
                 if (id <= 0)
                 {
@@ -124,8 +141,8 @@ namespace FamilyFlow.Controllers
                     ModelState.AddModelError(nameof(inputModel.StartTime), "Start Time must be earlier than the End Time");
                     return View(inputModel);
                 }
-
-                var selectedMember = await scheduleEventService.FindSelectedFamilyMemberAsync(inputModel.FamilyMemberId);
+           
+                var selectedMember = await scheduleEventService.FindSelectedFamilyMemberAsync(inputModel.CreatorId);
 
                 if (selectedMember == null)
                 {
@@ -141,7 +158,7 @@ namespace FamilyFlow.Controllers
                 try
                 {
                     await scheduleEventService.EditScheduleEventAsync(id, inputModel);
-                    return RedirectToAction("Details", "FamilyMembers", new { id = inputModel.FamilyMemberId });
+                    return RedirectToAction("Details", "FamilyMembers", new { id = inputModel.CreatorId });
                 }
                 catch (Exception e)
                 {
@@ -178,10 +195,11 @@ namespace FamilyFlow.Controllers
                 {
                     return BadRequest();
                 }
+
             try
                 {
                     await scheduleEventService.DeleteScheduleEventAsync(id, viewModel);
-                    return RedirectToAction("Details", "FamilyMembers", new { id = viewModel.FamilyMemberId });
+                    return RedirectToAction("Details", "FamilyMembers", new { id = viewModel.CreatorId });
                 }
                 catch (Exception e)
                 {

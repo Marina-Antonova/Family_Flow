@@ -39,12 +39,12 @@
 
                 <form asp-action="Delete" method="post" class="mt-4">
                     <input type="hidden" asp-for="Id" />
-                    <input type="hidden" asp-for="FamilyMemberId" />
+                    <input type="hidden" asp-for="CreatorId" />
 
                     <div class="d-flex justify-content-end gap-2">
                         <a asp-controller="FamilyMembers"
                            asp-action="Details"
-                           asp-route-id="@Model.FamilyMemberId"
+                           asp-route-id="@Model.CreatorId"
                            class="btn btn-secondary">
                             Cancel
                         </a>

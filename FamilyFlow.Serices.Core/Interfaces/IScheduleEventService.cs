@@ -7,8 +7,7 @@ namespace FamilyFlow.Services.Core.Interfaces
     {
         Task<CreateEditEventViewModel?> GetForCreateScheduleEventViewModelAsync(int familyMemberId);
 
-        Task CreateScheduleEventAsync(CreateEditEventViewModel inputModel);
-
+        Task CreateScheduleEventAsync(CreateEditEventViewModel inputModel, int familyMemberId);
         Task<CreateEditEventViewModel?> GetForEditScheduleEventViewModelAsync(int id);
 
         Task EditScheduleEventAsync(int id, CreateEditEventViewModel inputModel);
@@ -17,8 +16,10 @@ namespace FamilyFlow.Services.Core.Interfaces
 
         Task DeleteScheduleEventAsync(int id, DeleteEventViewModel viewModel);
 
-        IEnumerable<CreateEditAdultViewModel> GetAllAdults();
+        IEnumerable<CreateEditAdultViewModel> GetAllAdults(string userId);
+        IEnumerable<CreateEditAdultViewModel> GetAllMembers(string userId);
 
         Task<FamilyMember?> FindSelectedFamilyMemberAsync(int familyMemberId);
+
     }
 }

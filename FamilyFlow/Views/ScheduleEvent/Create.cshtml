@@ -12,7 +12,7 @@
 <form asp-action="Create" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    <input asp-for="FamilyMemberId" type="hidden" />
+    <input asp-for="CreatorId" type="hidden" />
 
     <div class="mb-3">
         <label asp-for="Title" class="form-label"></label>
@@ -38,7 +38,7 @@
         <span asp-validation-for="EndTime" class="text-danger"></span>
     </div>
 
-    @if (Model.Adults.All(a => a.Id != Model.FamilyMemberId))
+    @if (Model.Adults.All(a => a.Id != Model.CreatorId))
     {
         <div class="mb-3">
             <label asp-for="AccompanyingAdultId" class="form-label-add-edit">Select Adult</label>
@@ -49,11 +49,25 @@
             <span asp-validation-for="AccompanyingAdultId" class="text-danger"></span>
         </div>
     }
+
+        <div class="mb-3">
+        <label class="form-label-add-edit">Select Participants</label>
+        <div id="participants-container">
+            <select name="SelectedMemberIds" class="form-control mb-2">
+                <option value="">Select a member...</option>
+                @foreach (var member in Model.Members)
+                {
+                    <option value="@member.Id">@member.Name</option>
+                }
+            </select>
+        </div>
+        <button type="button" id="add-participant-btn" class="btn btn-sm btn-secondary mb-3">+ Add Participant</button>
+    </div>
     
     <button type="submit" class="btn btn-primary">Create</button>
     <a asp-controller="FamilyMembers"
        asp-action="Details"
-       asp-route-id="@Model.FamilyMemberId"
+       asp-route-id="@Model.CreatorId"
        class="btn btn-secondary">
         Cancel
     </a>

@@ -25,7 +25,8 @@ namespace FamilyFlow.Services.Core
               .Where(fm => fm.UserId == userId)
               .AsNoTracking()
               .Include(fm => fm.HouseTasks)
-              .Include(fm => fm.ScheduleEvents)
+              .Include(fm => fm.EventParticipations)
+              .ThenInclude(ep => ep.ScheduleEvent)
               .Select(static f => new AllFamilyMembersViewModel()
               {
                   Id = f.Id,
@@ -34,7 +35,7 @@ namespace FamilyFlow.Services.Core
                   RoleImagePath = f.Role.GetImagePath(),
                   Age = f.Age,
                   HouseTasksCount = f.HouseTasks.Count,
-                  ScheduleEventsCount = f.ScheduleEvents.Count,
+                  ScheduleEventsCount = f.AccompanyEvents.Count + f.EventParticipations.Count
               })
               .OrderBy(f => f.Id)
               .ToArrayAsync();
@@ -45,17 +46,31 @@ namespace FamilyFlow.Services.Core
         public async Task<DetailsFamilyMemberViewModel?> GetDetailsForFamilyMemberAsync(int id, string userId)
         {
             FamilyMember? selectedMember = await dbContext
-            .FamilyMembers
-            .Where(fm => fm.UserId == userId)
-            .AsNoTracking()
-            .Include(fm => fm.HouseTasks)
-            .Include(fm => fm.ScheduleEvents)
-            .FirstOrDefaultAsync(m => m.Id == id);
+                .FamilyMembers
+                .Where(fm => fm.UserId == userId)
+                .AsNoTracking()
+                .Include(fm => fm.HouseTasks)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             if (selectedMember == null)
             {
                 return null;
             }
+
+            List<DetailsScheduleEventsViewModel> events = await dbContext
+                .ScheduleEvents
+                .AsNoTracking()
+                .Where(se => se.CreatorId == selectedMember.Id
+                    || se.Participants.Any(p => p.FamilyMemberId == selectedMember.Id))
+                .Select(se => new DetailsScheduleEventsViewModel
+                {
+                    Id = se.Id,
+                    Title = se.Title,
+                    StartTime = se.StartTime,
+                    EndTime = se.EndTime
+                })
+                .OrderBy(se => se.StartTime)
+                .ToListAsync();
 
             return new DetailsFamilyMemberViewModel
             {
@@ -71,14 +86,9 @@ namespace FamilyFlow.Services.Core
                         DueDate = t.DueDate
                     })
                     .ToList(),
-                Events = selectedMember.ScheduleEvents
-                    .Select(e => new DetailsScheduleEventsViewModel
-                    {
-                        Id = e.Id,
-                        Title = e.Title,
-                        StartTime = e.StartTime,
-                        EndTime = e.EndTime
-                    })
+                Events = events
+                    .GroupBy(e => e.Id)
+                    .Select(g => g.First())
                     .ToList()
             };
 
