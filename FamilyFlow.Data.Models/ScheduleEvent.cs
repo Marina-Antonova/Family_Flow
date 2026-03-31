@@ -22,7 +22,7 @@ namespace FamilyFlow.Data.Models
 
         public virtual FamilyMember? AccompanyingAdult { get; set; }
 
-        public ICollection<ScheduleEventParticipant>? Participants { get; set; }
+        public ICollection<ScheduleEventParticipant> Participants { get; set; }
             = new List<ScheduleEventParticipant>();
 
         public int CreatorId { get; set; }
