@@ -151,7 +151,7 @@ namespace FamilyFlow.Services.Core
             return dbContext
              .FamilyMembers
              .AsNoTracking()
-             .Where(a => a.Age >= 18 && a.UserId == userId)
+             .Where(a => a.Age >= 18 && a.UserId.ToString() == userId)
              .OrderBy(a => a.Name)
              .Select(a => new CreateEditAdultViewModel()
              {
@@ -166,7 +166,7 @@ namespace FamilyFlow.Services.Core
             return dbContext
              .FamilyMembers
              .AsNoTracking()
-             .Where(m => m.UserId == userId)
+             .Where(m => m.UserId.ToString() == userId)
              .OrderBy(a => a.Name)
              .Select(a => new CreateEditAdultViewModel()
              {

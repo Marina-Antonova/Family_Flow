@@ -22,7 +22,7 @@ namespace FamilyFlow.Services.Core
         {
             IEnumerable<AllFamilyMembersViewModel> members = await dbContext
               .FamilyMembers
-              .Where(fm => fm.UserId == userId)
+              .Where(fm => fm.UserId.ToString() == userId)
               .AsNoTracking()
               .Include(fm => fm.HouseTasks)
               .Include(fm => fm.EventParticipations)
@@ -47,7 +47,7 @@ namespace FamilyFlow.Services.Core
         {
             FamilyMember? selectedMember = await dbContext
                 .FamilyMembers
-                .Where(fm => fm.UserId == userId)
+                .Where(fm => fm.UserId.ToString() == userId)
                 .AsNoTracking()
                 .Include(fm => fm.HouseTasks)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -101,7 +101,7 @@ namespace FamilyFlow.Services.Core
                 Name = inputModel.Name,
                 Role = (FamilyRole)inputModel.Role,
                 Age = inputModel.Age,
-                UserId = userId,
+                UserId = Guid.Parse(userId),
                 FamilyId = familyId
             };
 

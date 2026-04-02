@@ -1,4 +1,5 @@
-﻿using FamilyFlow.Services.Core.Interfaces;
+﻿using FamilyFlow.Data.Models;
+using FamilyFlow.Services.Core.Interfaces;
 using FamilyFlow.Web.ViewModels.FamilyMember;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -12,9 +13,9 @@ namespace FamilyFlow.Controllers
     {
         private readonly IFamilyMemberService familyMemberService;
         private readonly IFamilyService familyService;
-        private readonly UserManager<IdentityUser> userManager;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public FamilyMembersController(IFamilyService familyService, IFamilyMemberService familyMemberService, UserManager<IdentityUser> userManager)
+        public FamilyMembersController(IFamilyService familyService, IFamilyMemberService familyMemberService, UserManager<ApplicationUser> userManager)
         {
             this.familyMemberService = familyMemberService;
             this.userManager = userManager;

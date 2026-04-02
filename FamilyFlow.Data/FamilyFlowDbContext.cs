@@ -2,10 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using FamilyFlow.Data.Models;
 using FamilyFlow.Data.Configurations;
+using Microsoft.AspNetCore.Identity;
 
 namespace FamilyFlow.Data
 {
-    public class FamilyFlowDbContext : IdentityDbContext
+    public class FamilyFlowDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
     {
         public FamilyFlowDbContext(DbContextOptions<FamilyFlowDbContext> options)
             : base(options)
@@ -16,6 +17,7 @@ namespace FamilyFlow.Data
         public virtual DbSet<ScheduleEvent> ScheduleEvents { get; set; } = null!;
         public virtual DbSet<Family> Families { get; set; } = null!;
         public virtual DbSet<ScheduleEventParticipant> ScheduleEventParticipants { get; set; } = null!;
+        public virtual DbSet<ApplicationUser> ApplicationUsers { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

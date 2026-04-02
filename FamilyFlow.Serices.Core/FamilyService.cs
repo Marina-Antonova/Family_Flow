@@ -21,7 +21,7 @@ namespace FamilyFlow.Services.Core
         {
             return await dbContext
                 .Families
-                .Where(f => f.UserId == userId)
+                .Where(f => f.UserId.ToString() == userId)
                 .Select(f => new FamilyViewModel
                 {
                     Id = f.Id,
@@ -36,7 +36,7 @@ namespace FamilyFlow.Services.Core
             Family newFamily = new Family
             {
                 Name = model.Name,
-                UserId = model.UserId
+                UserId = Guid.Parse(model.UserId)
             };
 
             await dbContext.Families.AddAsync(newFamily);
@@ -99,7 +99,7 @@ namespace FamilyFlow.Services.Core
         {
             return await dbContext
                 .Families
-                .Where(f => f.UserId == userId)
+                .Where(f => f.UserId.ToString() == userId)
                 .Select(f => f.Id)
                 .FirstOrDefaultAsync();
         }

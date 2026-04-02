@@ -1,4 +1,5 @@
 using FamilyFlow.Data;
+using FamilyFlow.Data.Models;
 using FamilyFlow.Services;
 using FamilyFlow.Services.Core;
 using FamilyFlow.Services.Core.Interfaces;
@@ -22,11 +23,12 @@ namespace FamilyFlow
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services
-                .AddDefaultIdentity<IdentityUser>(options =>
+                .AddDefaultIdentity<ApplicationUser>(options =>
             {
                 ConfigureIdentity(options, builder.Configuration);
 
             })
+                .AddRoles<IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<FamilyFlowDbContext>();
             builder.Services.AddControllersWithViews();
 

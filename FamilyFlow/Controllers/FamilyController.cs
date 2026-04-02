@@ -1,4 +1,5 @@
-﻿using FamilyFlow.Services.Core;
+﻿using FamilyFlow.Data.Models;
+using FamilyFlow.Services.Core;
 using FamilyFlow.Services.Core.Interfaces;
 using FamilyFlow.Web.ViewModels.Family;
 using FamilyFlow.Web.ViewModels.FamilyMember;
@@ -12,9 +13,9 @@ namespace FamilyFlow.Web.Controllers
     public class FamilyController : Controller
     {
         private readonly IFamilyService familyService;
-        private readonly UserManager<IdentityUser> userManager;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public FamilyController(IFamilyService familyService, UserManager<IdentityUser> userManager)
+        public FamilyController(IFamilyService familyService, UserManager<ApplicationUser> userManager)
         {
             this.familyService = familyService;
             this.userManager = userManager;
