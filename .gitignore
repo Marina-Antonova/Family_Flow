@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/FamilyFlow.Data/Migrations/20260402123805_IntroduseApplicationUser.cs
+/FamilyFlow.Data/Migrations/20260402123805_IntroduseApplicationUser.Designer.cs
