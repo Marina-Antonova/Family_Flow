@@ -39,16 +39,18 @@
                                      <div class="d-flex gap-1">
                                             @if (User.IsInRole("Admin"))
                                             {
-                                                <a asp-controller="HouseTasks"
-                                                asp-action="Edit"
-                                                asp-route-id="@task.Id"
-                                                class="btn btn-sm btn-outline-primary">
+                                                <a asp-area="Admin"
+                                                   asp-controller="HouseTasks"
+                                                   asp-action="Edit"
+                                                   asp-route-id="@task.Id"
+                                                   class="btn btn-sm btn-outline-primary">
                                                     Edit
                                                 </a>
-                                                <a asp-controller="HouseTasks"
-                                                asp-action="Delete"
-                                                asp-route-id="@task.Id"
-                                                class="btn btn-sm btn-outline-danger">
+                                                <a asp-area="Admin"
+                                                   asp-controller="HouseTasks"
+                                                   asp-action="Delete"
+                                                   asp-route-id="@task.Id"
+                                                   class="btn btn-sm btn-outline-danger">
                                                     Delete
                                                 </a>
                                             }
@@ -65,7 +67,8 @@
                     }
                     @if (User.IsInRole("Admin"))
                       {
-                    <a asp-controller="HouseTasks"
+                    <a asp-area="Admin"
+                       asp-controller="HouseTasks"
                        asp-action="Create"
                        asp-route-id="@Model.Id"
                        class="btn btn-sm btn-outline-success mt-2">
@@ -98,17 +101,19 @@
                                     <div class="d-flex gap-1">
                                             @if (User.IsInRole("Admin"))
                                             {
-                                                <a asp-controller="ScheduleEvent"
-                                                asp-action="Edit"
-                                                asp-route-id="@ev.Id"
-                                                class="btn btn-sm btn-outline-primary">
+                                                <a asp-area="Admin"
+                                                   asp-controller="ScheduleEvent"
+                                                   asp-action="Edit"
+                                                   asp-route-id="@ev.Id"
+                                                   class="btn btn-sm btn-outline-primary">
                                                     Edit
                                                 </a>
 
-                                                <a asp-controller="ScheduleEvent"
-                                                asp-action="Delete"
-                                                asp-route-id="@ev.Id"
-                                                class="btn btn-sm btn-outline-danger">
+                                                <a asp-area="Admin"
+                                                   asp-controller="ScheduleEvent"
+                                                   asp-action="Delete"
+                                                   asp-route-id="@ev.Id"
+                                                   class="btn btn-sm btn-outline-danger">
                                                     Delete
                                                 </a>
                                             }
@@ -125,7 +130,8 @@
                     }
                     @if (User.IsInRole("Admin"))
                             {
-                    <a asp-controller="ScheduleEvent"
+                    <a asp-area="Admin"
+                       asp-controller="ScheduleEvent"
                        asp-action="Create"
                        asp-route-id="@Model.Id"
                        class="btn btn-sm btn-outline-success mt-2">

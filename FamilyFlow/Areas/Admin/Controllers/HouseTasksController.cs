@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyFlow.Web.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class HouseTasksController : Controller
     {
         private readonly IHouseTaskService houseTaskService;
@@ -59,7 +60,7 @@ namespace FamilyFlow.Web.Areas.Admin.Controllers
             {
                 await houseTaskService.CreateHouseTaskAsync(id, inputModel);
 
-                return RedirectToAction("Details", "FamilyMembers", new { id });
+                return RedirectToAction("Details", "FamilyMembers", new { id, area = "" });
             }
             catch (Exception e)
             {
@@ -112,7 +113,8 @@ namespace FamilyFlow.Web.Areas.Admin.Controllers
             try
             {
                 await houseTaskService.EditHouseTaskAsync(id, inputModel);
-                return RedirectToAction("Details", "FamilyMembers", new { id = inputModel.FamilyMemberId });
+                return RedirectToAction("Details", "FamilyMembers", new { id, area = "" });
+
             }
             catch (Exception e)
             {
@@ -153,7 +155,7 @@ namespace FamilyFlow.Web.Areas.Admin.Controllers
             try
             {
                 await houseTaskService.DeleteHouseTaskAsync(id, viewModel);
-                return RedirectToAction("Details", "FamilyMembers", new { id = viewModel.FamilyMemberId });
+                return RedirectToAction("Details", "FamilyMembers", new { id = viewModel.FamilyMemberId, area = "" });
             }
             catch (Exception e)
             {

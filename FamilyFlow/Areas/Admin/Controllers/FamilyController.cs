@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyFlow.Web.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class FamilyController : Controller
     {
         private readonly IFamilyService familyService;
@@ -60,7 +61,7 @@ namespace FamilyFlow.Web.Areas.Admin.Controllers
             try
             {
                 await familyService.EditFamilyAsync(id, inputModel);
-                return RedirectToAction("MyFamily");
+                return RedirectToAction("MyFamily", "Family", new { area = "" });
             }
             catch (Exception e)
             {
@@ -99,7 +100,7 @@ namespace FamilyFlow.Web.Areas.Admin.Controllers
             try
             {
                 await familyService.DeleteFamilyAsync(id, viewModel);
-                return RedirectToAction("index", "Home");
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
             catch (Exception e)
             {

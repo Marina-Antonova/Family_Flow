@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyFlow.Web.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class ScheduleEventController : Controller
     {
         private readonly IScheduleEventService scheduleEventService;
@@ -86,7 +87,7 @@ namespace FamilyFlow.Web.Areas.Admin.Controllers
             try
             {
                 await scheduleEventService.CreateScheduleEventAsync(inputModel, id);
-                return RedirectToAction("Details", "FamilyMembers", new { id });
+                return RedirectToAction("Details", "FamilyMembers", new { id, area = "" });
             }
             catch (Exception e)
             {
@@ -161,15 +162,16 @@ namespace FamilyFlow.Web.Areas.Admin.Controllers
                 try
                 {
                     await scheduleEventService.EditScheduleEventAsync(id, inputModel);
-                    return RedirectToAction("Details", "FamilyMembers", new { id = inputModel.CreatorId });
+                    return RedirectToAction("Details", "FamilyMembers", new { id = inputModel.CreatorId, area = "" });
+
                 }
                 catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    ModelState.AddModelError(string.Empty, "Unexpected error occurred while editing. Please try again later.");
-                    return View(inputModel);
+                    {
+                        Console.WriteLine(e);
+                        ModelState.AddModelError(string.Empty, "Unexpected error occurred while editing. Please try again later.");
+                        return View(inputModel);
+                    }
                 }
-            }
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
@@ -202,14 +204,15 @@ namespace FamilyFlow.Web.Areas.Admin.Controllers
             try
                 {
                     await scheduleEventService.DeleteScheduleEventAsync(id, viewModel);
-                    return RedirectToAction("Details", "FamilyMembers", new { id = viewModel.CreatorId });
+                    return RedirectToAction("Details", "FamilyMembers", new { id = viewModel.CreatorId, area = "" });
+
                 }
                 catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    ModelState.AddModelError(string.Empty, "Unexpected error occurred while deleting. Please try again later.");
-                    return View(viewModel);
+                    {
+                        Console.WriteLine(e);
+                        ModelState.AddModelError(string.Empty, "Unexpected error occurred while deleting. Please try again later.");
+                        return View(viewModel);
+                    }
                 }
-            }
     }
 }

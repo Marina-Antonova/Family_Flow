@@ -76,14 +76,16 @@ else
 
                             @if (User.IsInRole("Admin"))
                             {
-                                <a asp-controller="FamilyMembers"
+                                <a asp-area="Admin"
+                                   asp-controller="FamilyMembers"
                                    asp-action="Edit"
                                    asp-route-id="@fm.Id"
                                    class="btn btn-sm btn-outline-secondary">
                                     Edit
                                 </a>
 
-                                <a asp-controller="FamilyMembers"
+                                <a asp-area="Admin"
+                                   asp-controller="FamilyMembers"
                                    asp-action="Delete"
                                    asp-route-id="@fm.Id"
                                    class="btn btn-sm btn-outline-danger">

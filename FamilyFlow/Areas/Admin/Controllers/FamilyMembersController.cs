@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FamilyFlow.Web.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class FamilyMembersController : Controller
     {
         private readonly IFamilyMemberService familyMemberService;
@@ -67,7 +68,7 @@ namespace FamilyFlow.Web.Areas.Admin.Controllers
                     await signInManager.SignInAsync(currentUser, isPersistent: false);
                 }
 
-                return RedirectToAction("All");
+                return RedirectToAction("All", "FamilyMembers", new { area = "" });
             }
             catch (Exception e)
             {
@@ -106,7 +107,7 @@ namespace FamilyFlow.Web.Areas.Admin.Controllers
             try
             {
                 await familyMemberService.DeleteFamilyMemberAsync(id, inputModel);
-                return RedirectToAction("All");
+                return RedirectToAction("All", "FamilyMembers", new { area = "" });
             }
             catch (Exception e)
             {

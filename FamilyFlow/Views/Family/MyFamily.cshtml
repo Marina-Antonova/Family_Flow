@@ -32,14 +32,16 @@
                         </a>
                         @if (User.IsInRole("Admin"))
                     {
-                        <a asp-controller="Family"
+                        <a asp-area = "Admin"
+                        asp-controller="Family"
                         asp-action="Edit"
                         asp-route-id="@Model.Id"
                         class="btn btn-outline-secondary">
                             ✏️ Edit
                         </a>
 
-                        <a asp-controller="Family"
+                        <a asp-area="Admin"
+                        asp-controller="Family"
                         asp-action="Delete"
                         asp-route-id="@Model.Id"
                         class="btn btn-outline-danger">
