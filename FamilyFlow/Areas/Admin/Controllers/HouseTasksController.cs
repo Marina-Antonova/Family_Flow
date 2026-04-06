@@ -4,12 +4,12 @@ using FamilyFlow.Web.ViewModels.HouseTasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FamilyFlow.Controllers
+namespace FamilyFlow.Web.Areas.Admin.Controllers
 {
     public class HouseTasksController : Controller
     {
         private readonly IHouseTaskService houseTaskService;
-        public HouseTasksController(FamilyFlowDbContext dbContext, IHouseTaskService houseTaskService)
+        public HouseTasksController(IHouseTaskService houseTaskService)
         {
             this.houseTaskService = houseTaskService;
         }

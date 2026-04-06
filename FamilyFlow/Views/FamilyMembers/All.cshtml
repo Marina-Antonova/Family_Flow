@@ -74,19 +74,22 @@ else
                                 Details
                             </a>
 
-                            <a asp-controller="FamilyMembers"
-                               asp-action="Edit"
-                               asp-route-id="@fm.Id"
-                               class="btn btn-sm btn-outline-secondary">
-                                Edit
-                            </a>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-controller="FamilyMembers"
+                                   asp-action="Edit"
+                                   asp-route-id="@fm.Id"
+                                   class="btn btn-sm btn-outline-secondary">
+                                    Edit
+                                </a>
 
-                            <a asp-controller="FamilyMembers"
-                               asp-action="Delete"
-                               asp-route-id="@fm.Id"
-                               class="btn btn-sm btn-outline-danger">
-                                Delete
-                            </a>
+                                <a asp-controller="FamilyMembers"
+                                   asp-action="Delete"
+                                   asp-route-id="@fm.Id"
+                                   class="btn btn-sm btn-outline-danger">
+                                    Delete
+                                </a>
+                            }
 
                         </div>
                     </div>

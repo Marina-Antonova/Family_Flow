@@ -30,20 +30,22 @@
                            class="btn btn-primary">
                             👥 Members
                         </a>
-
+                        @if (User.IsInRole("Admin"))
+                    {
                         <a asp-controller="Family"
-                           asp-action="Edit"
-                           asp-route-id="@Model.Id"
-                           class="btn btn-outline-secondary">
+                        asp-action="Edit"
+                        asp-route-id="@Model.Id"
+                        class="btn btn-outline-secondary">
                             ✏️ Edit
                         </a>
 
                         <a asp-controller="Family"
-                           asp-action="Delete"
-                           asp-route-id="@Model.Id"
-                           class="btn btn-outline-danger">
+                        asp-action="Delete"
+                        asp-route-id="@Model.Id"
+                        class="btn btn-outline-danger">
                             🗑 Delete
                         </a>
+                    }
 
                     </div>
                 </div>

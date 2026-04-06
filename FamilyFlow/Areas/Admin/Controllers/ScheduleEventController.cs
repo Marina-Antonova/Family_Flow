@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FamilyFlow.Controllers
+namespace FamilyFlow.Web.Areas.Admin.Controllers
 {
     public class ScheduleEventController : Controller
     {
