@@ -109,6 +109,7 @@ namespace FamilyFlow.Controllers
             
             string userId = userManager.GetUserId(User);
             selectedEvent.Adults = scheduleEventService.GetAllAdults(userId).ToList();
+            selectedEvent.Members = scheduleEventService.GetAllMembers(userId).ToList();
 
             if (selectedEvent == null)
                 {
@@ -125,6 +126,7 @@ namespace FamilyFlow.Controllers
                 string userId = userManager.GetUserId(User);
 
                 inputModel.Adults = scheduleEventService.GetAllAdults(userId).ToList();
+                inputModel.Members = scheduleEventService.GetAllMembers(userId).ToList();
 
                 if (id <= 0)
                 {

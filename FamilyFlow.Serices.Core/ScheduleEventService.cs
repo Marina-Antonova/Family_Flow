@@ -89,6 +89,7 @@ namespace FamilyFlow.Services.Core
         {
             Data.Models.ScheduleEvent? selectedEvent = await dbContext
                 .ScheduleEvents
+                .Include(se => se.Participants)
                 .FirstOrDefaultAsync(se => se.Id == id);
 
             if (selectedEvent == null)
@@ -100,6 +101,15 @@ namespace FamilyFlow.Services.Core
             selectedEvent.StartTime = inputModel.StartTime;
             selectedEvent.EndTime = inputModel.EndTime;
             selectedEvent.AccompanyingAdultId = inputModel.AccompanyingAdultId;
+            selectedEvent.Participants.Clear();
+
+            foreach (int memberId in inputModel.SelectedMemberIds.Distinct())
+            {
+                selectedEvent.Participants.Add(new ScheduleEventParticipant
+                {
+                    FamilyMemberId = memberId
+                });
+            }
 
             await dbContext.SaveChangesAsync();
         }

@@ -53,13 +53,36 @@
     <div class="mb-3">
         <label class="form-label-add-edit">Select Participants</label>
         <div id="participants-container">
-            <select name="SelectedMemberIds" class="form-control mb-2">
-                <option value="" disabled selected>Select a member...</option>
-                @foreach (var member in Model.Members)
+            @if (Model.SelectedMemberIds.Any())
+            {
+                @foreach (var selectedMemberId in Model.SelectedMemberIds)
                 {
-                    <option value="@member.Id">@member.Name</option>
+                    <select name="SelectedMemberIds" class="form-control mb-2">
+                        <option value="">Select a member...</option>
+                        @foreach (var member in Model.Members)
+                        {
+                            @if (member.Id == selectedMemberId)
+                            {
+                                <option value="@member.Id" selected="selected">@member.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@member.Id">@member.Name</option>
+                            }
+                        }
+                    </select>
                 }
-            </select>
+            }
+            else
+            {
+                <select name="SelectedMemberIds" class="form-control mb-2">
+                    <option value="" selected>Select a member...</option>
+                    @foreach (var member in Model.Members.Where(m => m.Id != Model.Id))
+                {
+                        <option value="@member.Id">@member.Name</option>
+                    }
+                </select>
+            }
         </div>
         <button type="button" id="add-participant-btn" class="btn btn-sm btn-secondary mb-3">+ Add Participant</button>
     </div>
@@ -75,4 +98,38 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        (() => {
+            const container = document.getElementById('participants-container');
+            const addButton = document.getElementById('add-participant-btn');
+
+            if (!container || !addButton) {
+                return;
+            }
+
+            const createSelect = () => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'participant-select-row';
+
+                const select = document.createElement('select');
+                select.name = 'SelectedMemberIds';
+                select.className = 'form-control mb-2';
+                select.innerHTML = `
+                    <option value="" selected>Select a member...</option>
+                    @foreach (var member in Model.Members.Where(m => m.Id != Model.Id))
+                {
+                        <option value="@member.Id">@member.Name</option>
+                    }
+                `;
+
+                wrapper.appendChild(select);
+                return wrapper;
+            };
+
+            addButton.addEventListener('click', () => {
+                container.appendChild(createSelect());
+            });
+        })();
+    </script>
 }

@@ -2,7 +2,6 @@
 using FamilyFlow.GCommon.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Reflection.Emit;
 
 namespace FamilyFlow.Data.Configurations
 {
@@ -24,6 +23,18 @@ namespace FamilyFlow.Data.Configurations
               .WithMany(f => f.Members)
               .HasForeignKey(fm => fm.FamilyId)
               .OnDelete(DeleteBehavior.Restrict);
+
+            entity
+               .HasOne(fm => fm.User)
+               .WithMany(u => u.UserFamilyMembers)
+               .HasForeignKey(fm => fm.UserId)
+               .OnDelete(DeleteBehavior.Cascade);
+
+            entity
+                .HasOne(fm => fm.LinkedUser)
+                .WithOne(u => u.LinkedFamilyMember)
+                .HasForeignKey<FamilyMember>(fm => fm.LinkedUserId)
+                .OnDelete(DeleteBehavior.Restrict);
         } 
     }
 }
