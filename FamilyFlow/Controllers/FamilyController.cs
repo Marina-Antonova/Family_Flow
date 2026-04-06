@@ -14,21 +14,28 @@ namespace FamilyFlow.Web.Controllers
     {
         private readonly IFamilyService familyService;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
 
-        public FamilyController(IFamilyService familyService, UserManager<ApplicationUser> userManager)
+        public FamilyController(
+            IFamilyService familyService,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager)
         {
             this.familyService = familyService;
             this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
         [HttpGet]
         public async Task<IActionResult> MyFamily()
         {
             string? userId = userManager.GetUserId(User);
+            ApplicationUser? currentUser = await userManager.GetUserAsync(User);
 
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(userId) || currentUser == null)
             {
-                return RedirectToAction("Login", "Account");
+                await signInManager.SignOutAsync();
+                return RedirectToPage("/Account/Login", new { area = "Identity" });
             }
 
             var family = await familyService.GetFamilyForUserAsync(userId);
@@ -44,22 +51,19 @@ namespace FamilyFlow.Web.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            FamilyViewModel model = new FamilyViewModel()
-            {
-                UserId = userManager.GetUserId(User)
-            };
-
-            return View (model);
+            return View(new FamilyViewModel());
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(FamilyViewModel model)
         {
             string? userId = userManager.GetUserId(User);
+            ApplicationUser? currentUser = await userManager.GetUserAsync(User);
 
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(userId) || currentUser == null)
             {
-                return RedirectToAction("Login", "Account");
+                await signInManager.SignOutAsync();
+                return RedirectToPage("/Account/Login", new { area = "Identity" });
             }
 
             if (!ModelState.IsValid)
@@ -67,11 +71,12 @@ namespace FamilyFlow.Web.Controllers
                 return View(model);
             }
 
-            await familyService.CreateFamilyAsync(model);
+            await familyService.CreateFamilyAsync(model, userId);
             return RedirectToAction("MyFamily");
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
         {
             if (id <= 0)
@@ -89,6 +94,7 @@ namespace FamilyFlow.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, FamilyViewModel inputModel)
         {
             if (id <= 0)
@@ -117,6 +123,7 @@ namespace FamilyFlow.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             if (id <= 0)
@@ -134,7 +141,7 @@ namespace FamilyFlow.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id, FamilyViewModel? viewModel)
         {
             if (id <= 0)

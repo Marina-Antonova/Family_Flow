@@ -148,10 +148,16 @@ namespace FamilyFlow.Services.Core
 
         public IEnumerable<CreateEditAdultViewModel> GetAllAdults(string userId)
         {
+            int familyId = GetAccessibleFamilyId(userId);
+            if (familyId <= 0)
+            {
+                return Enumerable.Empty<CreateEditAdultViewModel>();
+            }
+
             return dbContext
              .FamilyMembers
              .AsNoTracking()
-             .Where(a => a.Age >= 18 && a.UserId.ToString() == userId)
+             .Where(a => a.Age >= 18 && a.FamilyId == familyId)
              .OrderBy(a => a.Name)
              .Select(a => new CreateEditAdultViewModel()
              {
@@ -163,10 +169,16 @@ namespace FamilyFlow.Services.Core
 
         public IEnumerable<CreateEditAdultViewModel> GetAllMembers(string userId)
         {
+            int familyId = GetAccessibleFamilyId(userId);
+            if (familyId <= 0)
+            {
+                return Enumerable.Empty<CreateEditAdultViewModel>();
+            }
+
             return dbContext
              .FamilyMembers
              .AsNoTracking()
-             .Where(m => m.UserId.ToString() == userId)
+             .Where(m => m.FamilyId == familyId)
              .OrderBy(a => a.Name)
              .Select(a => new CreateEditAdultViewModel()
              {
@@ -181,6 +193,31 @@ namespace FamilyFlow.Services.Core
             return await dbContext
                 .FamilyMembers
                 .FirstOrDefaultAsync(f => f.Id == familyMemberId);
+        }
+
+        private int GetAccessibleFamilyId(string userId)
+        {
+            if (!Guid.TryParse(userId, out Guid parsedUserId))
+            {
+                return 0;
+            }
+
+            int linkedFamilyId = dbContext
+                .FamilyMembers
+                .Where(fm => fm.LinkedUserId == parsedUserId)
+                .Select(fm => fm.FamilyId)
+                .FirstOrDefault();
+
+            if (linkedFamilyId > 0)
+            {
+                return linkedFamilyId;
+            }
+
+            return dbContext
+                .Families
+                .Where(f => f.UserId == parsedUserId)
+                .Select(f => f.Id)
+                .FirstOrDefault();
         }
     }
 }

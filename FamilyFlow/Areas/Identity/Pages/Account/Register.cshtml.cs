@@ -10,7 +10,9 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using FamilyFlow.Data;
 using FamilyFlow.Data.Models;
+using FamilyFlow.GCommon.Enums;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -18,6 +20,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace FamilyFlow.Areas.Identity.Pages.Account
@@ -30,14 +33,17 @@ namespace FamilyFlow.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly FamilyFlowDbContext _dbContext;
 
         public RegisterModel(
+            FamilyFlowDbContext dbContext,
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
+            _dbContext = dbContext;
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
@@ -113,6 +119,7 @@ namespace FamilyFlow.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                Input.Email = Input.Email.Trim();
                 var user = CreateUser();
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
@@ -122,6 +129,47 @@ namespace FamilyFlow.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    string normalizedEmail = Input.Email.ToUpperInvariant();
+                    FamilyMember? familyMember = await _dbContext.FamilyMembers
+                        .FirstOrDefaultAsync(fm => fm.Email != null && fm.Email.ToUpper() == normalizedEmail);
+
+                    string role = "User";
+
+                    if (familyMember != null)
+                    {
+                        if (familyMember.LinkedUserId != null && familyMember.LinkedUserId != user.Id)
+                        {
+                            await _userManager.DeleteAsync(user);
+                            ModelState.AddModelError(string.Empty, "This email is already linked to another registered family member.");
+                            return Page();
+                        }
+
+                        familyMember.LinkedUserId = user.Id;
+                        await _dbContext.SaveChangesAsync();
+
+                        role = familyMember.Role == FamilyRole.Mother || familyMember.Role == FamilyRole.Father
+                            ? "Admin"
+                            : "User";
+                    }
+
+                    IdentityResult roleResult = await _userManager.AddToRoleAsync(user, role);
+                    if (!roleResult.Succeeded)
+                    {
+                        await _userManager.DeleteAsync(user);
+                        foreach (IdentityError error in roleResult.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+
+                        if (familyMember != null)
+                        {
+                            familyMember.LinkedUserId = null;
+                            await _dbContext.SaveChangesAsync();
+                        }
+
+                        return Page();
+                    }
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

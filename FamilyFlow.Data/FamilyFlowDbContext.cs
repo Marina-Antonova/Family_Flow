@@ -27,6 +27,18 @@ namespace FamilyFlow.Data
             modelBuilder.ApplyConfiguration(new HouseTaskConfiguration());
             modelBuilder.ApplyConfiguration(new ScheduleEventConfiguration());
 
+            modelBuilder.Entity<FamilyMember>()
+                .HasOne(fm => fm.User)
+                .WithMany(u => u.UserFamilyMembers)
+                .HasForeignKey(fm => fm.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<FamilyMember>()
+                .HasOne(fm => fm.LinkedUser)
+                .WithOne(u => u.LinkedFamilyMember)
+                .HasForeignKey<FamilyMember>(fm => fm.LinkedUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<ScheduleEventParticipant>()
                 .HasKey(sep => new { sep.ScheduleEventId, sep.FamilyMemberId });
 

@@ -19,9 +19,34 @@ namespace FamilyFlow.Services.Core
 
         public async Task<FamilyViewModel?> GetFamilyForUserAsync(string userId)
         {
+            if (!Guid.TryParse(userId, out Guid parsedUserId))
+            {
+                return null;
+            }
+
+            int? linkedFamilyId = await dbContext
+                .FamilyMembers
+                .Where(fm => fm.LinkedUserId == parsedUserId)
+                .Select(fm => (int?)fm.FamilyId)
+                .FirstOrDefaultAsync();
+
+            if (linkedFamilyId.HasValue)
+            {
+                return await dbContext
+                    .Families
+                    .Where(f => f.Id == linkedFamilyId.Value)
+                    .Select(f => new FamilyViewModel
+                    {
+                        Id = f.Id,
+                        Name = f.Name
+                    })
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync();
+            }
+
             return await dbContext
                 .Families
-                .Where(f => f.UserId.ToString() == userId)
+                .Where(f => f.UserId == parsedUserId)
                 .Select(f => new FamilyViewModel
                 {
                     Id = f.Id,
@@ -31,12 +56,12 @@ namespace FamilyFlow.Services.Core
                 .FirstOrDefaultAsync();
         }
 
-        public async Task CreateFamilyAsync(FamilyViewModel model)
+        public async Task CreateFamilyAsync(FamilyViewModel model, string userId)
         {
             Family newFamily = new Family
             {
                 Name = model.Name,
-                UserId = Guid.Parse(model.UserId)
+                UserId = Guid.Parse(userId)
             };
 
             await dbContext.Families.AddAsync(newFamily);
@@ -97,9 +122,25 @@ namespace FamilyFlow.Services.Core
 
         public async Task<int> GetFamilyIdForUserAsync(string? userId)
         {
+            if (!Guid.TryParse(userId, out Guid parsedUserId))
+            {
+                return 0;
+            }
+
+            int linkedFamilyId = await dbContext
+                .FamilyMembers
+                .Where(fm => fm.LinkedUserId == parsedUserId)
+                .Select(fm => fm.FamilyId)
+                .FirstOrDefaultAsync();
+
+            if (linkedFamilyId > 0)
+            {
+                return linkedFamilyId;
+            }
+
             return await dbContext
                 .Families
-                .Where(f => f.UserId.ToString() == userId)
+                .Where(f => f.UserId == parsedUserId)
                 .Select(f => f.Id)
                 .FirstOrDefaultAsync();
         }

@@ -5,7 +5,7 @@ namespace FamilyFlow.Services.Core.Interfaces
     {
         Task<FamilyViewModel?> GetFamilyForUserAsync(string userId);
 
-        Task CreateFamilyAsync(FamilyViewModel model);
+        Task CreateFamilyAsync(FamilyViewModel model, string userId);
 
         Task<FamilyViewModel?> GetFamilyAsync(int id);
 

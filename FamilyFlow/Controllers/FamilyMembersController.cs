@@ -14,12 +14,18 @@ namespace FamilyFlow.Controllers
         private readonly IFamilyMemberService familyMemberService;
         private readonly IFamilyService familyService;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
 
-        public FamilyMembersController(IFamilyService familyService, IFamilyMemberService familyMemberService, UserManager<ApplicationUser> userManager)
+        public FamilyMembersController(
+            IFamilyService familyService,
+            IFamilyMemberService familyMemberService,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager)
         {
             this.familyMemberService = familyMemberService;
             this.userManager = userManager;
             this.familyService = familyService;
+            this.signInManager = signInManager;
         }
 
         [HttpGet]
@@ -112,6 +118,13 @@ namespace FamilyFlow.Controllers
             try
             {
                 await familyMemberService.CreateFamilyMemberAsync(inputModel, userId, familyId);
+                ApplicationUser? currentUser = await userManager.GetUserAsync(User);
+                if (currentUser != null)
+                {
+                    await userManager.UpdateSecurityStampAsync(currentUser);
+                    await signInManager.SignInAsync(currentUser, isPersistent: false);
+                }
+
                 return RedirectToAction("All");
             }
             catch (Exception e)
@@ -123,7 +136,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
         {
             if (id <= 0)
@@ -141,7 +154,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, CreateFamilyMemberViewModel inputModel)
         {
             if (id <= 0)
@@ -159,6 +172,13 @@ namespace FamilyFlow.Controllers
             try
             {
                 await familyMemberService.EditFamilyMemberAsync(id, inputModel);
+                ApplicationUser? currentUser = await userManager.GetUserAsync(User);
+                if (currentUser != null)
+                {
+                    await userManager.UpdateSecurityStampAsync(currentUser);
+                    await signInManager.SignInAsync(currentUser, isPersistent: false);
+                }
+
                 return RedirectToAction("All");
             }
             catch (Exception e)
@@ -170,7 +190,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             if (id <= 0)
@@ -188,7 +208,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id, DeleteFamilyMemberViewModel? inputModel)
         {
             if (id <= 0)

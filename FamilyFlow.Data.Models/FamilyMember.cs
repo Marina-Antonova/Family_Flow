@@ -20,6 +20,10 @@ namespace FamilyFlow.Data.Models
 
         public int Age { get; set; }
 
+        [EmailAddress]
+        [MaxLength(256)]
+        public string? Email { get; set; }
+
         public virtual ICollection<HouseTask> HouseTasks { get; set; }
                 = new List<HouseTask>();
         public virtual ICollection<ScheduleEvent> AccompanyEvents { get; set; } 
@@ -31,6 +35,11 @@ namespace FamilyFlow.Data.Models
         public Guid UserId { get; set; }
 
         public ApplicationUser User { get; set; } = null!;
+
+        [ForeignKey(nameof(LinkedUser))]
+        public Guid? LinkedUserId { get; set; }
+
+        public ApplicationUser? LinkedUser { get; set; }
 
         public int FamilyId { get; set; }
         public virtual Family Family { get; set; } = null!;

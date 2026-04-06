@@ -4,6 +4,7 @@ using FamilyFlow.Services.Core.Interfaces;
 using FamilyFlow.Web.ViewModels.FamilyMember;
 using FamilyFlow.GCommon;
 using FamilyFlow.GCommon.Enums;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -12,17 +13,25 @@ namespace FamilyFlow.Services.Core
     public class FamilyMemberService : IFamilyMemberService
     {
         private readonly FamilyFlowDbContext dbContext;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public FamilyMemberService(FamilyFlowDbContext dbContext)
+        public FamilyMemberService(FamilyFlowDbContext dbContext, UserManager<ApplicationUser> userManager)
         {
             this.dbContext = dbContext;
+            this.userManager = userManager;
         }
 
         public async Task<IEnumerable<AllFamilyMembersViewModel>> GetAllFamilyMembersAsync(string userId)
         {
+            int familyId = await GetAccessibleFamilyIdAsync(userId);
+            if (familyId <= 0)
+            {
+                return Enumerable.Empty<AllFamilyMembersViewModel>();
+            }
+
             IEnumerable<AllFamilyMembersViewModel> members = await dbContext
               .FamilyMembers
-              .Where(fm => fm.UserId.ToString() == userId)
+              .Where(fm => fm.FamilyId == familyId)
               .AsNoTracking()
               .Include(fm => fm.HouseTasks)
               .Include(fm => fm.EventParticipations)
@@ -45,9 +54,15 @@ namespace FamilyFlow.Services.Core
 
         public async Task<DetailsFamilyMemberViewModel?> GetDetailsForFamilyMemberAsync(int id, string userId)
         {
+            int familyId = await GetAccessibleFamilyIdAsync(userId);
+            if (familyId <= 0)
+            {
+                return null;
+            }
+
             FamilyMember? selectedMember = await dbContext
                 .FamilyMembers
-                .Where(fm => fm.UserId.ToString() == userId)
+                .Where(fm => fm.FamilyId == familyId)
                 .AsNoTracking()
                 .Include(fm => fm.HouseTasks)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -96,17 +111,24 @@ namespace FamilyFlow.Services.Core
 
         public async Task CreateFamilyMemberAsync(CreateFamilyMemberViewModel inputModel, string userId, int familyId)
         {
+            inputModel.Email = inputModel.Email?.Trim();
+            Guid? linkedUserId = await ResolveLinkedUserIdAsync(inputModel.Email, userId);
+
             FamilyMember newMember = new FamilyMember
             {
                 Name = inputModel.Name,
                 Role = (FamilyRole)inputModel.Role,
                 Age = inputModel.Age,
+                Email = inputModel.Email,
                 UserId = Guid.Parse(userId),
+                LinkedUserId = linkedUserId,
                 FamilyId = familyId
             };
 
             await dbContext.FamilyMembers.AddAsync(newMember);
             await dbContext.SaveChangesAsync();
+
+            await SyncIdentityRoleAsync(newMember.LinkedUserId, newMember.Role);
         }
 
         public async Task<CreateFamilyMemberViewModel?> GetForEditFamilyMemberAsync(int id)
@@ -120,7 +142,8 @@ namespace FamilyFlow.Services.Core
                 Id = fm.Id,
                 Name = fm.Name,
                 Role = fm.Role,
-                Age = fm.Age
+                Age = fm.Age,
+                Email = fm.Email
             })
             .FirstOrDefaultAsync();
 
@@ -134,6 +157,7 @@ namespace FamilyFlow.Services.Core
 
         public async Task EditFamilyMemberAsync(int id, CreateFamilyMemberViewModel inputModel)
         {
+            inputModel.Email = inputModel.Email?.Trim();
             FamilyMember? selectedMember = await dbContext
                 .FamilyMembers
                 .FirstOrDefaultAsync(fm => fm.Id == id);
@@ -146,8 +170,15 @@ namespace FamilyFlow.Services.Core
             selectedMember.Name = inputModel.Name;
             selectedMember.Role = (FamilyRole)inputModel.Role;
             selectedMember.Age = inputModel.Age;
+            selectedMember.Email = inputModel.Email;
+            selectedMember.LinkedUserId = await ResolveLinkedUserIdAsync(
+                inputModel.Email,
+                selectedMember.UserId.ToString(),
+                selectedMember.Id);
 
             await dbContext.SaveChangesAsync();
+
+            await SyncIdentityRoleAsync(selectedMember.LinkedUserId, selectedMember.Role);
 
         }
 
@@ -188,6 +219,120 @@ namespace FamilyFlow.Services.Core
             dbContext.FamilyMembers.Remove(selectedMember);
             await dbContext.SaveChangesAsync();
 
+        }
+
+        private async Task<int> GetAccessibleFamilyIdAsync(string userId)
+        {
+            if (!Guid.TryParse(userId, out Guid parsedUserId))
+            {
+                return 0;
+            }
+
+            int linkedFamilyId = await dbContext
+                .FamilyMembers
+                .Where(fm => fm.LinkedUserId == parsedUserId)
+                .Select(fm => fm.FamilyId)
+                .FirstOrDefaultAsync();
+
+            if (linkedFamilyId > 0)
+            {
+                return linkedFamilyId;
+            }
+
+            return await dbContext
+                .Families
+                .Where(f => f.UserId == parsedUserId)
+                .Select(f => f.Id)
+                .FirstOrDefaultAsync();
+        }
+
+        private async Task<Guid?> ResolveLinkedUserIdAsync(
+            string? email,
+            string ownerUserId,
+            int? currentFamilyMemberId = null)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return null;
+            }
+
+            string trimmedEmail = email.Trim();
+            string normalizedEmail = userManager.NormalizeEmail(trimmedEmail) ?? trimmedEmail.ToUpperInvariant();
+            ApplicationUser? ownerUser = await userManager.FindByIdAsync(ownerUserId);
+
+            if (ownerUser != null &&
+                !string.IsNullOrWhiteSpace(ownerUser.Email) &&
+                string.Equals(ownerUser.Email.Trim(), trimmedEmail, StringComparison.OrdinalIgnoreCase))
+            {
+                bool ownerAlreadyLinkedToAnotherMember = await dbContext.FamilyMembers
+                    .AnyAsync(fm => fm.LinkedUserId == ownerUser.Id && fm.Id != currentFamilyMemberId);
+
+                if (ownerAlreadyLinkedToAnotherMember)
+                {
+                    throw new InvalidOperationException("This account is already linked to another family member.");
+                }
+
+                return ownerUser.Id;
+            }
+
+            ApplicationUser? existingUser = await userManager.Users
+                .FirstOrDefaultAsync(u =>
+                    u.NormalizedEmail == normalizedEmail ||
+                    u.Email == trimmedEmail);
+
+            if (existingUser == null)
+            {
+                return null;
+            }
+
+            bool alreadyLinkedToAnotherMember = await dbContext.FamilyMembers
+                .AnyAsync(fm => fm.LinkedUserId == existingUser.Id && fm.Id != currentFamilyMemberId);
+
+            if (alreadyLinkedToAnotherMember)
+            {
+                throw new InvalidOperationException("This email is already linked to another family member.");
+            }
+
+            return existingUser.Id;
+        }
+
+        private async Task SyncIdentityRoleAsync(Guid? linkedUserId, FamilyRole familyRole)
+        {
+            if (!linkedUserId.HasValue)
+            {
+                return;
+            }
+
+            ApplicationUser? user = await userManager.FindByIdAsync(linkedUserId.Value.ToString());
+
+            if (user == null)
+            {
+                return;
+            }
+
+            string targetRole = familyRole == FamilyRole.Mother || familyRole == FamilyRole.Father
+                ? "Admin"
+                : "User";
+
+            string otherRole = targetRole == "Admin" ? "User" : "Admin";
+
+            if (await userManager.IsInRoleAsync(user, otherRole))
+            {
+                IdentityResult removeResult = await userManager.RemoveFromRoleAsync(user, otherRole);
+                if (!removeResult.Succeeded)
+                {
+                    throw new InvalidOperationException($"Failed to remove role '{otherRole}' from user.");
+                }
+            }
+
+            if (!await userManager.IsInRoleAsync(user, targetRole))
+            {
+                IdentityResult addResult = await userManager.AddToRoleAsync(user, targetRole);
+                if (!addResult.Succeeded)
+                {
+                    throw new InvalidOperationException($"Failed to add role '{targetRole}' to user.");
+                }
+            }
         }
     }
 }

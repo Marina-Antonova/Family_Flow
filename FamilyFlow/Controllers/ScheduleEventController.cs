@@ -1,4 +1,5 @@
-﻿using FamilyFlow.Services.Core.Interfaces;
+﻿using FamilyFlow.Data.Models;
+using FamilyFlow.Services.Core.Interfaces;
 using FamilyFlow.Web.ViewModels.ScheduleEvent;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -9,15 +10,15 @@ namespace FamilyFlow.Controllers
     public class ScheduleEventController : Controller
     {
         private readonly IScheduleEventService scheduleEventService;
-        private readonly UserManager<IdentityUser> userManager;
-        public ScheduleEventController(IScheduleEventService scheduleEventService, UserManager<IdentityUser> userManager)
+        private readonly UserManager<ApplicationUser> userManager;
+        public ScheduleEventController(IScheduleEventService scheduleEventService, UserManager<ApplicationUser> userManager)
         {
             this.scheduleEventService = scheduleEventService;
             this.userManager = userManager;
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task <IActionResult> Create(int id)
         {
             if (id <= 0)
@@ -43,7 +44,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(int id, CreateEditEventViewModel inputModel)
         {
             string userId = userManager.GetUserId(User);
@@ -96,7 +97,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
             {
                 if (id <= 0)
@@ -118,7 +119,7 @@ namespace FamilyFlow.Controllers
             }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, CreateEditEventViewModel inputModel)
             {
                 string userId = userManager.GetUserId(User);
@@ -169,7 +170,7 @@ namespace FamilyFlow.Controllers
             }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
             {
                 if (id <= 0)
@@ -188,7 +189,7 @@ namespace FamilyFlow.Controllers
             }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id, DeleteEventViewModel viewModel)
             {
                 if (id <= 0)

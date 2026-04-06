@@ -4,6 +4,7 @@ using FamilyFlow.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FamilyFlow.Data.Migrations
 {
     [DbContext(typeof(FamilyFlowDbContext))]
-    partial class FamilyFlowDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260404212357_NewMigration")]
+    partial class NewMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,15 +126,8 @@ namespace FamilyFlow.Data.Migrations
                     b.Property<int>("Age")
                         .HasColumnType("int");
 
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
                     b.Property<int>("FamilyId")
                         .HasColumnType("int");
-
-                    b.Property<Guid?>("LinkedUserId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -147,10 +143,6 @@ namespace FamilyFlow.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FamilyId");
-
-                    b.HasIndex("LinkedUserId")
-                        .IsUnique()
-                        .HasFilter("[LinkedUserId] IS NOT NULL");
 
                     b.HasIndex("UserId");
 
@@ -387,11 +379,6 @@ namespace FamilyFlow.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("FamilyFlow.Data.Models.ApplicationUser", "LinkedUser")
-                        .WithOne("LinkedFamilyMember")
-                        .HasForeignKey("FamilyFlow.Data.Models.FamilyMember", "LinkedUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("FamilyFlow.Data.Models.ApplicationUser", "User")
                         .WithMany("UserFamilyMembers")
                         .HasForeignKey("UserId")
@@ -399,8 +386,6 @@ namespace FamilyFlow.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Family");
-
-                    b.Navigation("LinkedUser");
 
                     b.Navigation("User");
                 });
@@ -499,8 +484,6 @@ namespace FamilyFlow.Data.Migrations
             modelBuilder.Entity("FamilyFlow.Data.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Family");
-
-                    b.Navigation("LinkedFamilyMember");
 
                     b.Navigation("UserFamilyMembers");
                 });

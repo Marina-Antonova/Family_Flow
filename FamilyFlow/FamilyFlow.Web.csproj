@@ -22,9 +22,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FamilyFlow.Data.Seeding\FamilyFlow.Data.Seeding.csproj" />
     <ProjectReference Include="..\FamilyFlow.GCommon\FamilyFlow.GCommon.csproj" />
     <ProjectReference Include="..\FamilyFlow.Serices.Core\FamilyFlow.Services.Core.csproj" />
+    <ProjectReference Include="..\FamilyFlow.Web.Infrastructure\FamilyFlow.Web.Infrastructure.csproj" />
     <ProjectReference Include="..\FamilyFlow.Web.ViewModels\FamilyFlow.Web.ViewModels.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Areas\Admin\Models\" />
   </ItemGroup>
 
 </Project>

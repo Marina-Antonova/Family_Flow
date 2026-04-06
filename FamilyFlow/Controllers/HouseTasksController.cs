@@ -15,7 +15,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(int id)
         {
             if (id <= 0)
@@ -34,7 +34,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(int id, CreateEditTaskViewModel inputModel)
         {
 
@@ -70,7 +70,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task <IActionResult> Edit(int id)
         {
             if (id <= 0)
@@ -89,7 +89,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task <IActionResult> Edit(int id, CreateEditTaskViewModel inputModel)
         {
             if (id <= 0)
@@ -123,7 +123,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             if (id <= 0)
@@ -142,7 +142,7 @@ namespace FamilyFlow.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id, DeleteTaskViewModel viewModel)
         {
             if (id <= 0)

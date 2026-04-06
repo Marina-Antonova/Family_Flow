@@ -1,10 +1,14 @@
 using FamilyFlow.Data;
 using FamilyFlow.Data.Models;
+using FamilyFlow.Data.Seeding;
+using FamilyFlow.Data.Seeding.Interfaces;
 using FamilyFlow.Services;
 using FamilyFlow.Services.Core;
 using FamilyFlow.Services.Core.Interfaces;
 using FamilyFlow.Services.Interfaces;
+using FamilyFlow.Web.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -22,15 +26,29 @@ namespace FamilyFlow
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+            builder.Services.AddTransient<IIdentitySeeder, IdentitySeeder>();
+            builder.Services.AddTransient<IEmailSender, NoOpEmailSender>();
+
             builder.Services
-                .AddDefaultIdentity<ApplicationUser>(options =>
+                .AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
             {
-                ConfigureIdentity(options, builder.Configuration);
+                ConfigureIdentity(builder.Configuration, options);
 
             })
+                .AddEntityFrameworkStores<FamilyFlowDbContext>()
                 .AddRoles<IdentityRole<Guid>>()
-                .AddEntityFrameworkStores<FamilyFlowDbContext>();
+                .AddSignInManager<SignInManager<ApplicationUser>>()
+                .AddUserManager<UserManager<ApplicationUser>>()
+                .AddDefaultTokenProviders();
+
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Identity/Account/Login";
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+            });
+
             builder.Services.AddControllersWithViews();
+            builder.Services.AddRazorPages();
 
             builder.Services.AddScoped<IFamilyMemberService, FamilyMemberService>();
             builder.Services.AddScoped<IHouseTaskService, HouseTaskService>();
@@ -60,6 +78,12 @@ namespace FamilyFlow
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseRolesSeeder();
+
+            app.MapControllerRoute(
+                name: "adminArea",
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+            
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
@@ -68,7 +92,7 @@ namespace FamilyFlow
             app.Run();
         }
 
-        private static void ConfigureIdentity(IdentityOptions options, ConfigurationManager configuration)
+        private static void ConfigureIdentity(ConfigurationManager configuration, IdentityOptions options)
         {
             options.SignIn.RequireConfirmedAccount = configuration
                 .GetValue<bool>("IdentityOptions:SignIn:RequireConfirmedAccount");
