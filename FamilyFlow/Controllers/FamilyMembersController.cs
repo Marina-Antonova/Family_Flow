@@ -30,7 +30,7 @@ namespace FamilyFlow.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> All()
+        public async Task<IActionResult> All(string? searchTerm)
         {
             string userId = userManager.GetUserId(User);
 
@@ -46,10 +46,15 @@ namespace FamilyFlow.Controllers
                 return RedirectToAction("MyFamily", "Family");
             }
 
-            IEnumerable<AllFamilyMembersViewModel> members = await familyMemberService.GetAllFamilyMembersAsync(userId);
+            IEnumerable<AllFamilyMembersViewModel> members = string.IsNullOrWhiteSpace(searchTerm)
+                ? await familyMemberService.GetAllFamilyMembersAsync(userId)
+                : await familyMemberService.SearchFamilyMemberAsync(userId, searchTerm);
+
+            ViewBag.SearchTerm = searchTerm;
+
             return View(members);
         }
-
+    
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Details(int id)

@@ -1,4 +1,5 @@
 ﻿using FamilyFlow.Web.ViewModels.FamilyMember;
+using FamilyFlow.Web.ViewModels.ScheduleEvent;
 
 namespace FamilyFlow.Services.Core.Interfaces
 {
@@ -17,6 +18,8 @@ namespace FamilyFlow.Services.Core.Interfaces
         Task<DeleteFamilyMemberViewModel?> GetForDeleteFamilyMemberAsync(int id);
 
         Task DeleteFamilyMemberAsync(int id, DeleteFamilyMemberViewModel? viewModel);
+
+        Task<IEnumerable<AllFamilyMembersViewModel>> SearchFamilyMemberAsync(string userId, string searchText);
 
     }
 }

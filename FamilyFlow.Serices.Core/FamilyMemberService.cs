@@ -6,6 +6,7 @@ using FamilyFlow.GCommon;
 using FamilyFlow.GCommon.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using FamilyFlow.Web.ViewModels.ScheduleEvent;
 
 
 namespace FamilyFlow.Services.Core
@@ -333,6 +334,34 @@ namespace FamilyFlow.Services.Core
                     throw new InvalidOperationException($"Failed to add role '{targetRole}' to user.");
                 }
             }
+        }
+        public async Task<IEnumerable<AllFamilyMembersViewModel>> SearchFamilyMemberAsync(string userId, string searchText)
+        {
+            int familyId = await GetAccessibleFamilyIdAsync(userId);
+
+            if (familyId <= 0 || string.IsNullOrWhiteSpace(searchText))
+            {
+                return Enumerable.Empty<AllFamilyMembersViewModel>();
+            }
+
+            searchText = searchText.Trim();
+
+            return await dbContext.FamilyMembers
+                .AsNoTracking()
+                .Where(fm => fm.FamilyId == familyId &&
+                             EF.Functions.Like(fm.Name, $"%{searchText}%"))
+                .Select(fm => new AllFamilyMembersViewModel
+                {
+                    Id = fm.Id,
+                    Name = fm.Name,
+                    Role = fm.Role.ToString(),
+                    RoleImagePath = fm.Role.GetImagePath(),
+                    Age = fm.Age,
+                    HouseTasksCount = fm.HouseTasks.Count,
+                    ScheduleEventsCount = fm.AccompanyEvents.Count + fm.EventParticipations.Count
+                })
+                .OrderBy(fm => fm.Name)
+                .ToListAsync();
         }
     }
 }

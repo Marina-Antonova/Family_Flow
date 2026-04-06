@@ -17,6 +17,15 @@
     </a>
 </div>
 
+<form asp-action="All" method="get" class="mb-3">
+    <input type="text"
+           name="searchTerm"
+           value="@ViewBag.SearchTerm"
+           class="form-control"
+           placeholder="Search by member name..." />
+    <button type="submit" class="btn btn-primary mt-2">Search</button>
+</form>
+
 @if (Model == null || !Model.Any())
 {
     <div class="alert alert-light border text-center">
