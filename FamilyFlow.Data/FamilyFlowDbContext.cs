@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using FamilyFlow.Data.Models;
 using FamilyFlow.Data.Configurations;
 using Microsoft.AspNetCore.Identity;
+using FamilyFlow.Data.Seeding;
 
 namespace FamilyFlow.Data
 {
@@ -27,6 +28,8 @@ namespace FamilyFlow.Data
             modelBuilder.ApplyConfiguration(new HouseTaskConfiguration());
             modelBuilder.ApplyConfiguration(new ScheduleEventConfiguration());
             modelBuilder.ApplyConfiguration(new ScheduleEventParticipantConfiguration());
+
+            UserSeeder.Seed(modelBuilder);
         }
     }
 }

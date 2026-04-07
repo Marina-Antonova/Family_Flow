@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FamilyFlow.Data.Models\FamilyFlow.Data.Models.csproj" />
+    <ProjectReference Include="..\FamilyFlow.Data.Seeding\FamilyFlow.Data.Seeding.csproj" />
   </ItemGroup>
 
 </Project>
