@@ -113,7 +113,7 @@ namespace FamilyFlow.Web.Areas.Admin.Controllers
             try
             {
                 await houseTaskService.EditHouseTaskAsync(id, inputModel);
-                return RedirectToAction("Details", "FamilyMembers", new { id, area = "" });
+                return RedirectToAction("Details", "FamilyMembers", new { id = inputModel.FamilyMemberId, area = "" });
 
             }
             catch (Exception e)

@@ -4,6 +4,6 @@ namespace FamilyFlow.Services.Interfaces
 {
     public interface IScheduleService
     {
-        Task<List<ScheduleItemViewModel>> GetFullScheduleAsync();
+        Task<List<ScheduleItemViewModel>> GetFullScheduleAsync(string userId);
     }
 }

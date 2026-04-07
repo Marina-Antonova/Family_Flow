@@ -77,7 +77,7 @@
             {
                 <select name="SelectedMemberIds" class="form-control mb-2">
                     <option value="" selected>Select a member...</option>
-                    @foreach (var member in Model.Members.Where(m => m.Id != Model.Id))
+                    @foreach (var member in Model.Members.Where(m => m.Id != Model.CreatorId))
                 {
                         <option value="@member.Id">@member.Name</option>
                     }
@@ -118,7 +118,7 @@
                 select.className = 'form-control mb-2';
                 select.innerHTML = `
                     <option value="" selected>Select a member...</option>
-                    @foreach (var member in Model.Members.Where(m => m.Id != Model.Id))
+                    @foreach (var member in Model.Members.Where(m => m.Id != Model.CreatorId))
                 {
                         <option value="@member.Id">@member.Name</option>
                     }

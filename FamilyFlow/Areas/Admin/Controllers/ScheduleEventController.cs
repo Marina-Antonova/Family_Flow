@@ -129,6 +129,8 @@ namespace FamilyFlow.Web.Areas.Admin.Controllers
                 inputModel.Adults = scheduleEventService.GetAllAdults(userId).ToList();
                 inputModel.Members = scheduleEventService.GetAllMembers(userId).ToList();
 
+                ModelState.Remove(nameof(inputModel.SelectedMemberIds));
+
                 if (id <= 0)
                 {
                     return BadRequest();
