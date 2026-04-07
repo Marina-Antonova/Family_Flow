@@ -9,14 +9,61 @@ namespace FamilyFlow.Data.Configurations
     {
         private readonly IEnumerable<FamilyMember> Members = new List<FamilyMember>()
         {
-             new FamilyMember { Id = 1, Name = "Alice", Role = FamilyRole.Mother, Age = 40},
-             new FamilyMember { Id = 2, Name = "Bob", Role = FamilyRole.Father, Age = 42},
-             new FamilyMember { Id = 3, Name = "Charlie", Role = FamilyRole.Son, Age = 12},
-             new FamilyMember { Id = 4, Name = "Daisy", Role = FamilyRole.Daughter, Age = 10}
+                new FamilyMember
+                {
+                    Id = 11,
+                    Name = "Alice",
+                    Role = FamilyRole.Mother,
+                    Age = 40,
+                    FamilyId = 10,
+                    UserId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                    LinkedUserId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")
+                },
+                new FamilyMember
+                {
+                    Id = 12,
+                    Name = "Bob",
+                    Role = FamilyRole.Father,
+                    Age = 42,
+                    FamilyId = 10,
+                    UserId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                    LinkedUserId = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb")
+                },
+                new FamilyMember
+                {
+                    Id = 13,
+                    Name = "Charlie",
+                    Role = FamilyRole.Son,
+                    Age = 6,
+                    FamilyId = 10,
+                    UserId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                    LinkedUserId = null
+                },
+                new FamilyMember
+                {
+                    Id = 14,
+                    Name = "Daisy",
+                    Role = FamilyRole.Daughter,
+                    Age = 10,
+                    FamilyId = 10,
+                    UserId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                    LinkedUserId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd")
+                },
+                new FamilyMember
+                {
+                    Id = 15,
+                    Name = "Elise",
+                    Role = FamilyRole.Grandmother,
+                    Age = 56,
+                    FamilyId = 10,
+                    UserId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                    LinkedUserId = null
+                },
         };
+
         public void Configure(EntityTypeBuilder<FamilyMember> entity)
         {
-            //entity.HasData(Members);
+            entity.HasData(Members);
 
             entity
               .HasOne(fm => fm.Family)
