@@ -24,6 +24,7 @@ namespace FamilyFlow.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.ApplyConfiguration(new FamilyConfiguration());
             modelBuilder.ApplyConfiguration(new FamilyMemberConfiguration());
             modelBuilder.ApplyConfiguration(new HouseTaskConfiguration());
             modelBuilder.ApplyConfiguration(new ScheduleEventConfiguration());
